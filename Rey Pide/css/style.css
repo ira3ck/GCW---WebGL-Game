@@ -1,0 +1,461 @@
+  
+  /*Color Principal #e6b483*/
+  /*Color Secundario #5e5ec2*/
+  .center-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+  }
+
+  .center-col{
+    width: 30vw;
+    margin: auto;
+    align-items: center;
+    text-align: center;
+  }
+
+  .overlap{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+
+  @keyframes desliz {
+    0%   {background-position: 0, 0;}
+    100% {background-position: 60vh, 60vw;}
+  }
+
+  .menuScreen{
+    background-image: url("../img/fondo.jpg");
+    background-size: 60vh, 60vw;
+    background-repeat: repeat;
+    background-position: 0, 0;
+    animation: 50s desliz infinite linear;;
+  }
+
+  @keyframes pulsante {
+    0%   {opacity: 1.0;}
+    50%  {opacity: 0.5;}
+    100% {opacity: 1.0;}
+  }
+
+  .initBTN{
+    background-color: #e6b483;
+    font-size: 30px;
+    color: whitesmoke;
+    font-weight: bold;
+    border-radius: 50px;
+    padding: 10px;
+    padding-left: 50px;
+    padding-right: 50px;
+    border: 3px solid #e6b483;
+    animation-name: pulsante;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    cursor: pointer;
+  }
+
+  .initBTN:hover{
+    background-color: #f7e6d4;
+    color: #eb9846;
+  }
+
+  .initBTN:active{
+    background-color: #f7e6d4;
+    color: #eb9846;
+    font-size: 33px;
+  }
+
+  .fondo{
+    position: absolute;
+    filter: blur(10px);
+    -webkit-filter: blur(10px);
+  }
+
+  @keyframes cambiante {
+    0%   {opacity: 1.0;}
+    50%  {opacity: 0.0;}
+    100% {opacity: 1.0;}
+  }
+
+  #changing{
+    animation-name: cambiante;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+    animation-delay: 1.8575148s;
+  }
+
+  .yesShow{
+    display: block;
+  }
+
+  .noShow{
+    display: none;
+  }
+
+  @media screen and (max-width: 1080px){
+      .yesShow{
+          display: none;
+      }
+      .noShow{
+        display: block;
+      }
+  }
+
+  @media screen and (max-height: 720px){
+    .yesShow{
+        display: none;
+    }
+    .noShow{
+      display: block;
+    }
+  }
+
+  .supIzq{
+      position:absolute;
+      top: 7.5vh;
+      left: 7.5vw;
+      width: 10vw;
+      height: 10vh;
+      border-top: 2px solid black;
+      border-left: 2px solid black;
+  }
+  .supDer{
+    position:absolute;
+    top: 7.5vh;
+    right: 7.5vw;
+    width: 10vw;
+    height: 10vh;
+    border-top: 2px solid black;
+    border-right: 2px solid black;
+}
+.infIzq{
+    position:absolute;
+    bottom: 7.5vh;
+    left: 7.5vw;
+    width: 10vw;
+    height: 10vh;
+    border-bottom: 2px solid black;
+    border-left: 2px solid black;
+}
+.infDer{
+    position:absolute;
+    bottom: 7.5vh;
+    right: 7.5vw;
+    width: 10vw;
+    height: 10vh;
+    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+}
+
+@keyframes roto {
+    0%   {transform:rotateY(0deg);}
+    60% {transform:rotateY(1095deg);}
+    100% {transform:rotateY(1080deg);}
+  }
+
+#logoAnim{
+    animation-name: roto;
+    animation-duration: 3s;
+}
+
+@keyframes juegaBTN {
+  0% {width: 30vh; height: 30vh;}
+  8% {width: 30vh; height: 30vh;}
+
+  11% {width: 31vh; height: 31vh;}
+  12% {width: 30vh; height: 30vh;}
+  15% {width: 33vh; height: 33vh;}
+  16% {width: 30vh; height: 30vh;}
+  19% {width: 33vh; height: 33vh;}
+  20% {width: 30vh; height: 30vh;}
+  24% {width: 33vh; height: 33vh;}
+
+  32% {width: 30vh; height: 30vh;}
+
+  35% {width: 31vh; height: 31vh;}
+  36% {width: 30vh; height: 30vh;}
+  39% {width: 31vh; height:31vh;}
+  40% {width: 30vh; height: 30vh;}
+  44% {width: 33vh; height: 33vh;}
+
+  52% {width:30vh; height: 30vh;}
+
+  55% {width: 33vh; height: 33vh;}
+  56% {width: 30vh; height: 30vh;}
+  59% {width: 33vh; height: 33vh;}
+  60% {width: 30vh; height: 30vh;}
+  64% {width: 31vh; height: 31vh;}
+
+  72% {width: 30vh; height: 30vh;}
+
+  75% {width: 31vh; height: 31vh;}
+  76% {width: 30vh; height: 30vh;}
+  80% {width: 33vh; height: 33vh;}
+
+  88% {width:30vh; height: 30vh;}
+
+  91% {width: 31vh; height: 31vh;}
+  92% {width: 30vh; height: 30vh;}
+  95% {width: 30vh; height: 30vh;}
+  96% {width: 33vh; height: 33vh;}
+  100% {width:31vh; height: 31vh;}
+}
+
+@keyframes juegaText {
+  0% {font-size: 15vh}
+  8% {font-size: 15vh}
+
+  11% {font-size: 15.5vh}
+  12% {font-size: 15vh}
+  15% {font-size: 16vh}
+  16% {font-size: 15vh}
+  19% {font-size: 16vh}
+  20% {font-size: 15vh}
+  24% {font-size: 16vh}
+
+  32% {font-size: 15vh}
+
+  35% {font-size: 15.5vh}
+  36% {font-size: 15vh}
+  39% {font-size: 15.5vh}
+  40% {font-size: 15vh}
+  44% {font-size: 16vh}
+
+  52% {font-size: 15vh}
+
+  55% {font-size: 16vh}
+  56% {font-size: 15vh}
+  59% {font-size: 16vh}
+  60% {font-size: 15vh}
+  64% {font-size: 15.5vh}
+
+  72% {font-size: 15vh}
+
+  75% {font-size: 15.5vh}
+  76% {font-size: 15vh}
+  80% {font-size: 16vh}
+
+  88% {font-size: 15vh}
+
+  91% {font-size: 15.5vh}
+  92% {font-size: 15vh}
+  95% {font-size: 16vh}
+  96% {font-size: 15vh}
+  100% {font-size: 15.5vh}
+}
+
+.jugar{
+  position: relative;
+  height: 40vh;
+  cursor: pointer;
+}
+
+.svg-triangle{
+  margin:  auto;
+  width: 100px;
+  height: 100px;
+}
+
+.svg-triangle polygon{
+  fill: whitesmoke;
+}
+
+.jugarBTN{
+  color: white;
+  -webkit-text-stroke: 0.3vw #eb9846; 
+  font-size: 15vh;
+  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+
+  animation-name: juegaText;
+  animation-duration: 120s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.playBTN{
+  background-color: #eb9846;
+  width: 30vh;
+  height: 30vh;
+  border-radius: 50%;
+
+  animation-name: juegaBTN;
+  animation-duration: 60s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.jugar:hover .jugarBTN{
+  animation-play-state: paused;
+  font-size: 5vh;
+}
+
+.jugar:hover .playBTN{
+  animation-play-state: paused;
+  width: 45vw;
+  height: 45vh;
+}
+  
+.perfil{
+  position: absolute;
+
+  padding: 10px;
+  bottom: 0;
+  left: 0;
+
+  height: 20vh;
+  width: 35vw;
+}
+
+.areaBTN{
+  position: absolute;
+
+  bottom: 0;
+  right: 0%;
+
+  height: 50vh;
+  width: 20vw;
+}
+
+.botones{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: flex-end;
+  bottom: 5vh;
+  right: 30px;
+}
+
+.menuBTN{
+  background-color: #eb9846;
+  border: none;
+  outline: none;
+  border-radius: 15px;
+}
+
+#confBTN{
+background-color: #eb9846;
+}
+
+.popText{
+  font-size: 3vh;
+}
+
+.pfCard{
+  color: aliceblue;
+  display: flex;
+  align-items: center;
+  background-color: #eb9846;
+  height: 100%;
+  border-radius: 15px;
+  font-size: 3vw;
+  overflow-wrap: break-word;
+}
+
+.cuadroFoto{
+  position: relative;
+  display: inline-block;
+  height:100%;
+  margin-left: 0.5vw;
+  padding: 20px;
+}
+
+.fotoPerfil{
+  height: 100%;
+  width: auto;
+  border-radius: 20px;
+}
+
+.pfName{
+  position: relative;
+  display: inline-block;
+  display: block;
+}
+
+#pauseMenu{
+  position: absolute;
+  top: 0%;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(128, 128, 128);
+  opacity: 50%;
+  display: none;
+  visibility: hidden;
+}
+
+.pauseBTN{
+  cursor: pointer;
+  opacity: 100% !important;
+  background-color: black;
+  color: aliceblue;
+  width: 100%;
+  max-width: 30vw;
+  height: 100%;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  
+  border-radius: 30px;
+  font-size: 3vh;
+}
+
+.pauseBTN:hover{
+  background-color: azure;
+  color: black;
+}
+
+.onePlace{
+  font-size: 3vh;
+  background-color: rgb(219, 211, 102);
+}
+.twoPlace{
+  font-size: 2.8vh;
+  background-color: rgb(179, 188, 189);
+}
+.threePlace{
+  font-size: 2.6vh;
+  background-color: rgb(190, 164, 116);
+}
+
+.onePlace img{
+  width: 10vh;
+  height: 10vh;
+  border-radius: 1vh;
+}
+.twoPlace img{
+  width: 8vh;
+  height: 8vh;
+  border-radius: 1vh;
+}
+.threePlace img{
+  width: 6vh;
+  height: 6vh;
+  border-radius: 1vh;
+}
+.nPlace{
+  border-bottom: 1px solid rgb(128, 128, 128);
+}
+.nPlace img{
+  width: 4vh;
+  height: 4vh;
+  border-radius: 1vh;
+}
+
+td.pts{
+  text-align: end;
+}
+td.pfp{
+  text-align: end;
+}
+td{
+  padding: 0.5rem;
+}

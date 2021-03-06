@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+		integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+		crossorigin="anonymous"></script>
+		<link rel="shortcut icon" href="img/icono.png" /> 
+	<title>Rey Pide</title>
+	<link rel="stylesheet" href="css/style.css">
+	<style>
+		body {
+			margin: 0;
+		}
+
+		#info {
+			position: absolute;
+			top: 10px;
+			width: 100%;
+			text-align: center;
+			z-index: 100;
+			display: block;
+			color: aliceblue;
+		}
+
+		.text {
+			display: inline-block;
+		}
+	</style>
+</head>
+
+<body>
+	<script src="js/three.js"></script>
+	
+	<script src="js/scripts.js"></script>
+	<script>
+
+		const scene = new THREE.Scene();
+		//const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+		const camera = new THREE.PerspectiveCamera(75, 1.77, 0.1, 1000);
+
+		const renderer = new THREE.WebGLRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		//renderer.setSize(1080, 720);
+		document.body.appendChild(renderer.domElement);
+
+		const floorPos = -2.25;
+
+		const geometry = new THREE.BoxGeometry();
+		const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+		const floorMat = new THREE.MeshBasicMaterial({ color: 0xc76af2 });
+		const wallMat = new THREE.MeshBasicMaterial({ color: 0x06e5de });
+
+		const geoCircle = new THREE.CircleGeometry(0.5, 20);
+		const floorGeo = new THREE.PlaneGeometry(90, 0.5, 3, 3);
+		const WallGeo = new THREE.PlaneGeometry(0.5, 2, 3, 3);
+		const cube = new THREE.Mesh(geoCircle, material);
+		const piso = new THREE.Mesh(floorGeo, floorMat);
+		const izqWall = new THREE.Mesh(WallGeo, wallMat);
+		const derWall = new THREE.Mesh(WallGeo, wallMat);
+
+
+
+
+		const size = 10;
+		const divisions = 10;
+
+		const gridHelper = new THREE.GridHelper(size, divisions);
+		scene.add(gridHelper);
+
+		piso.position.y = -3;
+		cube.position.y = floorPos;
+		scene.add(cube);
+		scene.add(piso);
+		scene.add(izqWall);
+
+
+
+		camera.position.z = 5;
+
+
+		///////////////
+		// movement - please calibrate these values
+
+		var izqSpeed = 0.0;
+		var derSpeed = 0.0;
+		var downSpeed = 0.234;
+		var jumpSpeed = 0;
+		var inAir = false;
+		var jump = false;
+		var der = false;
+		var izq = false;
+		var izqPress = false;
+		var derPress = true;
+		var jumps = 2;
+		var cycle = 9;
+		var arr = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
+
+		var paused = false;
+		function showNoshow() {
+			if (paused) {
+				document.getElementById("pauseMenu").style.display = "none";
+				document.getElementById("pauseMenu").style.visibility = "hidden";
+				/*$("#pauseMenu").css("display", "none");
+				$("#pauseMenu").css("visibility", "hidden");*/
+				paused = !paused;
+			}
+			else {
+				document.getElementById("pauseMenu").style.display = "block";
+				document.getElementById("pauseMenu").style.visibility = "visible";
+				/*$("#pauseMenu").css("display", "block");
+				$("#pauseMenu").css("visibility", "visible");*/
+				paused = !paused;
+			}
+		}
+
+
+		document.addEventListener("keydown", onDocumentKeyDown, false);
+		function onDocumentKeyDown(event) {
+			var keyCode = event.which;
+			switch (keyCode) {
+				case 27:
+					window.location.href = "menu.html";
+					break;
+				case 80:
+					showNoshow();
+					break;
+				case 87:
+					jumps--;
+					if (jumps < 0) jumps = 0;
+					else
+						jump = true;
+					inAir = true;
+					break;
+				/*case 83:
+					ySpeed -= 0.01;
+					break;*/
+				case 65:
+					izqPress = true;
+					izq = true;
+					der = false;
+					break;
+				case 68:
+					derPress = true;
+					der = true;
+					izq = false;
+					break;
+				/*case 32:
+					cube.position.set(0, 0, 0);
+					break;*/
+				default:
+					break;
+			}
+		};
+
+		document.addEventListener("keyup", onDocumentKeyUp, false);
+		function onDocumentKeyUp(event) {
+			var keyCode = event.which;
+			switch (keyCode) {
+				case 65:
+					izqPress = false;
+					break;
+				case 68:
+					derPress = false;
+					break;
+				default:
+					break;
+			}
+		};
+
+
+		window.addEventListener('resize', onWindowResize);
+
+		function onWindowResize() {
+
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize(window.innerWidth, window.innerHeight);
+
+		}
+		/////////////////
+
+
+		const animate = function () {
+			requestAnimationFrame(animate);
+
+			if (izqSpeed > 0.2) izqSpeed = 0.2;
+			if (derSpeed > 0.2) derSpeed = 0.2;
+			if (izqSpeed < 0.0) izqSpeed = 0.0;
+			if (derSpeed < 0.0) derSpeed = 0.0;
+
+			if (izq) {
+				izqSpeed -= 0.05;
+				if (izqSpeed < 0.0) izqSpeed = 0.0;
+				if (izqPress) {
+					izqSpeed += 0.09;
+					derSpeed = 0.0;
+				}
+			}
+
+			if (der) {
+				derSpeed -= 0.05;
+				if (derSpeed < 0.0) derSpeed = 0.0;
+				if (derPress) {
+					derSpeed += 0.09;
+					izqSpeed = 0.0;
+				}
+			}
+
+			if (jump) {
+				document.getElementById('arr').innerText = arr[cycle] / 180;
+				jumpSpeed += arr[cycle] / 180;
+				cycle--;
+				if (cycle < 0) {
+					jump = false;
+					jumpSpeed = 0.0;
+					cycle = 9;
+				}
+			}
+
+
+
+			cube.position.x -= izqSpeed;
+			cube.position.x += derSpeed;
+			cube.position.y += jumpSpeed;
+
+			cube.position.y -= downSpeed;
+			if (cube.position.y < floorPos) {
+				cube.position.y = floorPos;
+				jumps = 2;
+			}
+
+			document.getElementById('x').innerText = cube.position.x;
+			document.getElementById('y').innerText = cube.position.y;
+			document.getElementById('z').innerText = cube.position.z;
+			document.getElementById('cycle').innerText = cycle;
+			document.getElementById('jumpSpeed').innerText = jumpSpeed;
+			document.getElementById('jump').innerText = jump;
+			document.getElementById('inAir').innerText = paused;
+
+
+			renderer.render(scene, camera);
+		};
+
+		animate();
+	</script>
+
+	<div id="pauseMenu">
+		<div class="center-screen">
+			<div class="container">
+				<div class="row justify-content-md-center">
+					<div class="pauseBTN" onclick="showNoshow()">
+						VOLVER AL JUEGO
+					</div>
+				</div>
+				<div class="row justify-content-md-center mt-5">
+					<div class="pauseBTN" onclick="redirect('menu.html')">
+						SALIR
+					</div>
+				</div>
+				<div class="row"></div>
+			</div>
+
+		</div>
+	</div>
+
+	<div id="info">
+		<p>Datos</p>
+		<div>x: <div class="text" id="x"></div>
+		</div><br>
+		<div>y: <div class="text" id="y"></div>
+		</div><br>
+		<div>z: <div class="text" id="z"></div>
+		</div><br>
+		<div>cycle: <div class="text" id="cycle"></div>
+		</div><br>
+		<div>jumpSpeed: <div class="text" id="jumpSpeed"></div>
+		</div><br>
+		<div>jump: <div class="text" id="jump"></div>
+		</div><br>
+		<div>paused: <div class="text" id="inAir"></div>
+		</div><br>
+		<div>arr[cycle] / 333: <div class="text" id="arr"></div>
+		</div><br>
+	</div>
+</body>
+
+</html>
