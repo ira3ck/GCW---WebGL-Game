@@ -43,6 +43,7 @@
 	<script type="text/javascript" src="js/libs/three/MTLLoader.js"></script>
 	<script type="text/javascript" src="js/libs/three/OBJLoader.js"></script>
 	<script src="js/scripts.js"></script>
+	<script src="js/classes.js"></script>
 	<script type="text/javascript">
 		var scene;
 		var camera;
@@ -52,12 +53,14 @@
 		var clock;
 		var deltaTime;
 		var keys = {};
-		var cube, cube2;
+		var cube, cube2, testobj;
 		var camMove;
 		var facing1Prev, facing2Prev;
 		var posT;
 		var xAxis, zAxis;
-
+		var PickArray = []
+		var P1WO = false;
+		var PuntajeJ1 = 0;
 		$(document).ready(function () {
 			setupScene();
 			document.addEventListener('keydown', onKeyDown);
@@ -107,47 +110,117 @@
 
 			var yaw = 0;
 			var forward = 0;
+			///////////////////////
+			if(PickArray[0].Recogido == true){
+				PickArray[0].Objeto.position.x = PickArray[0].Seguir.position.x;
+				PickArray[0].Objeto.position.z = PickArray[0].Seguir.position.z;
+			}
+			if(PickArray[0].Entregado == false){
+				if((testobj.position.x > -5 && testobj.position.x < 5) && (testobj.position.z > 15)){
+					//PickArray[0].Objeto.remove();
+						testobj.position.y = 10;
+						PuntajeJ1++;
+						PickArray[0].Entregado = true;
+					//PickArray[0].Objeto.remove();
+				}
+			}
+			
+			if (keys["E"]){				
+				var distance = Math.sqrt(((testobj.position.x - cube.position.x)**2) + ((testobj.position.x - cube.position.x)**2));
+				if(distance < 1.6 && PickArray[0].Recogido == false ){
+					PickArray[0].Objeto = testobj;
+					PickArray[0].Seguir = cube;
+					PickArray[0].Recogido = true;	
+					P1WO = true;		
+				}
+			}
+			else if(keys["Q"]){
+				if(PickArray[0].Recogido == true){
+					PickArray[0].Seguir = testobj
+					PickArray[0].Recogido = false
+					P1WO = false;
+				}
+
+			}
+			/////////////////
 			if (keys["A"]) {
+				cube.rotation.y= (90 * Math.PI)/180;
+				
 				yaw = 5;
 				moveS1 = true;
 			} else if (keys["D"]) {
+				cube.rotation.y= (270 * Math.PI)/180;
 				yaw = -5;
 				moveS1 = true;
 			}
 			if (keys["W"]) {
+				cube.rotation.y = (0 * Math.PI)/180;
+				if(keys["A"])
+					cube.rotation.y = (45 * Math.PI)/180;
+				else if(keys["D"])
+					cube.rotation.y = (315 * Math.PI)/180;
 				forward = -5;
 				moveF1=true;
 			} else if (keys["S"]) {
+				cube.rotation.y= (180 * Math.PI)/180;
+				if(keys["A"])
+					cube.rotation.y = (135 * Math.PI)/180;
+				else if(keys["D"])
+					cube.rotation.y = (225 * Math.PI)/180;
 				forward = 5;
 				moveF1=true;
 			}
 			var yaw2 = 0;
 			var forward2 = 0;
+			var moveF2 = false;
+			var moveS2 = false;
 			if (keys["J"]) {
+				cube2.rotation.y= (90 * Math.PI)/180;
+				
 				yaw2 = 5;
+				moveS2=true;
 			} else if (keys["L"]) {
+				cube2.rotation.y= (270 * Math.PI)/180;
 				yaw2 = -5;
+				moveS2=true;
 			}
 			if (keys["I"]) {
+				cube2.rotation.y = (0 * Math.PI)/180;
+				if(keys["J"])
+					cube2.rotation.y = (45 * Math.PI)/180;
+				else if(keys["L"])
+					cube2.rotation.y = (315 * Math.PI)/180;
 				forward2 = -5;
+				moveF2 = true;
 			} else if (keys["K"]) {
+				cube2.rotation.y= (180 * Math.PI)/180;
+				if(keys["J"])
+					cube2.rotation.y = (135 * Math.PI)/180;
+				else if(keys["L"])
+					cube2.rotation.y = (225 * Math.PI)/180;
 				forward2 = 5;
+				moveF2 = true;
+			
 			}
 
 			angle = cube.position.angleTo(facing1Prev);
 			var orientation = cube.position.x * facing1Prev.z - cube.position.z * facing1Prev.x;
 			if (orientation > 0) angle = 2 * Math.PI - angle;
-			cube.rotation.y = angle;
+			//cube.rotation.y = angle;
 			//cube.rotateY(angle);
 			//cube.translateOnAxis(zAxis, -forward * deltaTime);
 			//cube.translateOnAxis(xAxis, yaw * deltaTime);
 			if(moveF1)
-			cube.position.z += -forward * deltaTime;
+				cube.position.z += -forward * deltaTime;
 			if(moveS1)
-			cube.position.x += yaw * deltaTime;
+				cube.position.x += yaw * deltaTime;
 
-			cube2.translateZ(-forward2 * deltaTime);
-			cube2.translateX(yaw2 * deltaTime);
+			if(moveF2)
+				cube2.position.z += -forward2 * deltaTime;
+			if(moveS2)
+				cube2.position.x += yaw2 * deltaTime;
+			//cube2.translateZ(-forward2 * deltaTime);
+			//cube2.translateX(yaw2 * deltaTime);
 
 			camMove.position.x = (cube.position.x + cube2.position.x) / 20;
 			camMove.position.z = (cube.position.z + cube2.position.z) / 20;
@@ -202,7 +275,15 @@
 				cube2.position.x = -5;
 				scene.add(cube2);
 			});
-
+			loadOBJWithMTL("modelos/shit/", "Boya.obj", "Boya.mtl", (object) => {
+				testobj = object;
+				testobj.position.x = -5;
+				scene.add(testobj);
+			});
+		    //Pickables.push(testobj);
+			PickArray.push(new Pickable(testobj, false, testobj, false));
+			scene.add(PickArray);
+			//var lol = new Pickable()
 			//posT.copy(cube.position);
 			xAxis = new THREE.Vector3(1, 0, 0);
 			zAxis = new THREE.Vector3(0, 0, 1);
