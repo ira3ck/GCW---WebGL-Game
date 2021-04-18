@@ -14,7 +14,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
 		crossorigin="anonymous"></script>
-		<link rel="shortcut icon" href="img/icono.png" /> 
+	<link rel="shortcut icon" href="img/icono.png" />
 	<title>Rey Pide</title>
 	<link rel="stylesheet" href="css/style.css">
 	<style>
@@ -40,144 +40,53 @@
 
 <body>
 	<script src="js/three.js"></script>
-	
+	<script type="text/javascript" src="js/libs/three/MTLLoader.js"></script>
+	<script type="text/javascript" src="js/libs/three/OBJLoader.js"></script>
 	<script src="js/scripts.js"></script>
-	<script>
+	<script type="text/javascript">
+		var scene;
+		var camera;
+		var renderer;
+		var controls;
+		var objects = [];
+		var clock;
+		var deltaTime;
+		var keys = {};
+		var cube, cube2;
+		var camMove;
+		var facing1Prev, facing2Prev;
+		var posT;
+		var xAxis, zAxis;
 
-		const scene = new THREE.Scene();
-		//const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-		const camera = new THREE.PerspectiveCamera(75, 1.77, 0.1, 1000);
+		$(document).ready(function () {
+			setupScene();
+			document.addEventListener('keydown', onKeyDown);
+			document.addEventListener('keyup', onKeyUp);
 
-		const renderer = new THREE.WebGLRenderer();
-		renderer.setSize(window.innerWidth, window.innerHeight);
-		//renderer.setSize(1080, 720);
-		document.body.appendChild(renderer.domElement);
+			render();
+		});
 
-		const floorPos = -2.25;
+		function loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback) {
+			var mtlLoader = new THREE.MTLLoader();
+			mtlLoader.setPath(path);
+			mtlLoader.load(mtlFile, (materials) => {
 
-		const geometry = new THREE.BoxGeometry();
-		const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+				var objLoader = new THREE.OBJLoader();
+				objLoader.setMaterials(materials);
+				objLoader.setPath(path);
+				objLoader.load(objFile, (object) => {
+					onLoadCallback(object);
+				});
 
-		const floorMat = new THREE.MeshBasicMaterial({ color: 0xc76af2 });
-		const wallMat = new THREE.MeshBasicMaterial({ color: 0x06e5de });
-
-		const geoCircle = new THREE.CircleGeometry(0.5, 20);
-		const floorGeo = new THREE.PlaneGeometry(90, 0.5, 3, 3);
-		const WallGeo = new THREE.PlaneGeometry(0.5, 2, 3, 3);
-		const cube = new THREE.Mesh(geoCircle, material);
-		const piso = new THREE.Mesh(floorGeo, floorMat);
-		const izqWall = new THREE.Mesh(WallGeo, wallMat);
-		const derWall = new THREE.Mesh(WallGeo, wallMat);
-
-
-
-
-		const size = 10;
-		const divisions = 10;
-
-		const gridHelper = new THREE.GridHelper(size, divisions);
-		scene.add(gridHelper);
-
-		piso.position.y = -3;
-		cube.position.y = floorPos;
-		scene.add(cube);
-		scene.add(piso);
-		scene.add(izqWall);
-
-
-
-		camera.position.z = 5;
-
-
-		///////////////
-		// movement - please calibrate these values
-
-		var izqSpeed = 0.0;
-		var derSpeed = 0.0;
-		var downSpeed = 0.234;
-		var jumpSpeed = 0;
-		var inAir = false;
-		var jump = false;
-		var der = false;
-		var izq = false;
-		var izqPress = false;
-		var derPress = true;
-		var jumps = 2;
-		var cycle = 9;
-		var arr = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
-
-		var paused = false;
-		function showNoshow() {
-			if (paused) {
-				document.getElementById("pauseMenu").style.display = "none";
-				document.getElementById("pauseMenu").style.visibility = "hidden";
-				/*$("#pauseMenu").css("display", "none");
-				$("#pauseMenu").css("visibility", "hidden");*/
-				paused = !paused;
-			}
-			else {
-				document.getElementById("pauseMenu").style.display = "block";
-				document.getElementById("pauseMenu").style.visibility = "visible";
-				/*$("#pauseMenu").css("display", "block");
-				$("#pauseMenu").css("visibility", "visible");*/
-				paused = !paused;
-			}
+			});
 		}
 
-
-		document.addEventListener("keydown", onDocumentKeyDown, false);
-		function onDocumentKeyDown(event) {
-			var keyCode = event.which;
-			switch (keyCode) {
-				case 27:
-					window.location.href = "menu.html";
-					break;
-				case 80:
-					showNoshow();
-					break;
-				case 87:
-					jumps--;
-					if (jumps < 0) jumps = 0;
-					else
-						jump = true;
-					inAir = true;
-					break;
-				/*case 83:
-					ySpeed -= 0.01;
-					break;*/
-				case 65:
-					izqPress = true;
-					izq = true;
-					der = false;
-					break;
-				case 68:
-					derPress = true;
-					der = true;
-					izq = false;
-					break;
-				/*case 32:
-					cube.position.set(0, 0, 0);
-					break;*/
-				default:
-					break;
-			}
-		};
-
-		document.addEventListener("keyup", onDocumentKeyUp, false);
-		function onDocumentKeyUp(event) {
-			var keyCode = event.which;
-			switch (keyCode) {
-				case 65:
-					izqPress = false;
-					break;
-				case 68:
-					derPress = false;
-					break;
-				default:
-					break;
-			}
-		};
-
+		function onKeyDown(event) {
+			keys[String.fromCharCode(event.keyCode)] = true;
+		}
+		function onKeyUp(event) {
+			keys[String.fromCharCode(event.keyCode)] = false;
+		}
 
 		window.addEventListener('resize', onWindowResize);
 
@@ -189,71 +98,120 @@
 			renderer.setSize(window.innerWidth, window.innerHeight);
 
 		}
-		/////////////////
 
+		function render() {
+			requestAnimationFrame(render);
+			deltaTime = clock.getDelta();
+			var moveF1 = false;
+			var moveS1 = false;
 
-		const animate = function () {
-			requestAnimationFrame(animate);
-
-			if (izqSpeed > 0.2) izqSpeed = 0.2;
-			if (derSpeed > 0.2) derSpeed = 0.2;
-			if (izqSpeed < 0.0) izqSpeed = 0.0;
-			if (derSpeed < 0.0) derSpeed = 0.0;
-
-			if (izq) {
-				izqSpeed -= 0.05;
-				if (izqSpeed < 0.0) izqSpeed = 0.0;
-				if (izqPress) {
-					izqSpeed += 0.09;
-					derSpeed = 0.0;
-				}
+			var yaw = 0;
+			var forward = 0;
+			if (keys["A"]) {
+				yaw = 5;
+				moveS1 = true;
+			} else if (keys["D"]) {
+				yaw = -5;
+				moveS1 = true;
+			}
+			if (keys["W"]) {
+				forward = -5;
+				moveF1=true;
+			} else if (keys["S"]) {
+				forward = 5;
+				moveF1=true;
+			}
+			var yaw2 = 0;
+			var forward2 = 0;
+			if (keys["J"]) {
+				yaw2 = 5;
+			} else if (keys["L"]) {
+				yaw2 = -5;
+			}
+			if (keys["I"]) {
+				forward2 = -5;
+			} else if (keys["K"]) {
+				forward2 = 5;
 			}
 
-			if (der) {
-				derSpeed -= 0.05;
-				if (derSpeed < 0.0) derSpeed = 0.0;
-				if (derPress) {
-					derSpeed += 0.09;
-					izqSpeed = 0.0;
-				}
-			}
+			angle = cube.position.angleTo(facing1Prev);
+			var orientation = cube.position.x * facing1Prev.z - cube.position.z * facing1Prev.x;
+			if (orientation > 0) angle = 2 * Math.PI - angle;
+			cube.rotation.y = angle;
+			//cube.rotateY(angle);
+			//cube.translateOnAxis(zAxis, -forward * deltaTime);
+			//cube.translateOnAxis(xAxis, yaw * deltaTime);
+			if(moveF1)
+			cube.position.z += -forward * deltaTime;
+			if(moveS1)
+			cube.position.x += yaw * deltaTime;
 
-			if (jump) {
-				document.getElementById('arr').innerText = arr[cycle] / 180;
-				jumpSpeed += arr[cycle] / 180;
-				cycle--;
-				if (cycle < 0) {
-					jump = false;
-					jumpSpeed = 0.0;
-					cycle = 9;
-				}
-			}
+			cube2.translateZ(-forward2 * deltaTime);
+			cube2.translateX(yaw2 * deltaTime);
 
-
-
-			cube.position.x -= izqSpeed;
-			cube.position.x += derSpeed;
-			cube.position.y += jumpSpeed;
-
-			cube.position.y -= downSpeed;
-			if (cube.position.y < floorPos) {
-				cube.position.y = floorPos;
-				jumps = 2;
-			}
-
-			document.getElementById('x').innerText = cube.position.x;
-			document.getElementById('y').innerText = cube.position.y;
-			document.getElementById('z').innerText = cube.position.z;
-			document.getElementById('cycle').innerText = cycle;
-			document.getElementById('jumpSpeed').innerText = jumpSpeed;
-			document.getElementById('jump').innerText = jump;
-			document.getElementById('inAir').innerText = paused;
+			camMove.position.x = (cube.position.x + cube2.position.x) / 20;
+			camMove.position.z = (cube.position.z + cube2.position.z) / 20;
+			camera.lookAt(camMove.position);
 
 
 			renderer.render(scene, camera);
-		};
 
-		animate();
+			facing1Prev.copy(cube.position);
+			//cube.position.copy(facing1Prev);
+			//$('#x').text(ex);
+			//$('#y').text(sed);
+			$('#z').text(angle);
+		}
+
+		function setupScene() {
+			var visibleSize = { width: window.innerWidth, height: window.innerHeight };
+			clock = new THREE.Clock();
+			scene = new THREE.Scene();
+			camera = new THREE.PerspectiveCamera(75, visibleSize.width / visibleSize.height, 0.1, 100);
+			camera.position.z = -10;
+			camera.position.y = 10;
+
+			camMove = new THREE.Object3D();
+			camMove.position.set(0, 0, 0);
+			scene.add(camMove);
+
+			renderer = new THREE.WebGLRenderer({ precision: "mediump" });
+			renderer.setClearColor(new THREE.Color(0, 0, 0));
+			renderer.setPixelRatio(visibleSize.width / visibleSize.height);
+			renderer.setSize(visibleSize.width, visibleSize.height);
+
+			var ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1.0);
+			scene.add(ambientLight);
+
+			var directionalLight = new THREE.DirectionalLight(new THREE.Color(1, 1, 0), 0.4);
+			directionalLight.position.set(0, 0, 1);
+			scene.add(directionalLight);
+
+			var grid = new THREE.GridHelper(50, 10, 0xffffff, 0xffffff);
+			grid.position.y = -1;
+			scene.add(grid);
+
+			loadOBJWithMTL("modelos/flecha/", "flecha.obj", "flecha2.mtl", (object) => {
+				cube = object;
+				cube.position.x = 5;
+				scene.add(cube);
+			});
+
+			loadOBJWithMTL("modelos/flecha/", "flecha.obj", "flecha.mtl", (object) => {
+				cube2 = object;
+				cube2.position.x = -5;
+				scene.add(cube2);
+			});
+
+			//posT.copy(cube.position);
+			xAxis = new THREE.Vector3(1, 0, 0);
+			zAxis = new THREE.Vector3(0, 0, 1);
+			facing1Prev = new THREE.Vector3(0, 0, 1);
+			facing2Prev = new THREE.Vector3(0, 0, 1);
+
+			$("#scene-section").append(renderer.domElement);
+		}
+
 	</script>
 
 	<div id="pauseMenu">
@@ -283,7 +241,7 @@
 		</div><br>
 		<div>z: <div class="text" id="z"></div>
 		</div><br>
-		<div>cycle: <div class="text" id="cycle"></div>
+		<!--<div>cycle: <div class="text" id="cycle"></div>
 		</div><br>
 		<div>jumpSpeed: <div class="text" id="jumpSpeed"></div>
 		</div><br>
@@ -292,8 +250,10 @@
 		<div>paused: <div class="text" id="inAir"></div>
 		</div><br>
 		<div>arr[cycle] / 333: <div class="text" id="arr"></div>
-		</div><br>
+		</div><br>-->
 	</div>
+
+	<div id="scene-section"></div>
 </body>
 
 </html>
