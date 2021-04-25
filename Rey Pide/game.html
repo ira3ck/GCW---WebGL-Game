@@ -61,8 +61,7 @@
 		var PickArray = []
 		var P1WO = false;
 		var PuntajeJ1 = 0;
-		var pos2, pos2Ant;
-		var count2;
+		var Players = [];
 
 		$(document).ready(function () {
 			setupScene();
@@ -108,6 +107,13 @@
 
 		function render() {
 			requestAnimationFrame(render);
+			$("#x").empty();
+			$("#x").append(Players[0].Bateria);
+			$("#y").empty();
+			$("#y").append(Players[1].Bateria);
+			$("#z").empty();
+			$("#z").append("ScoreP1:" + Players[0].Puntaje + " ScoreP2:" + Players[1].Puntaje);
+
 			deltaTime = clock.getDelta();
 			var moveF1 = false;
 			var moveS1 = false;
@@ -115,31 +121,88 @@
 			var yaw = 0;
 			var forward = 0;
 			///////////////////////
-			if (PickArray[0].Recogido == true) {
+			////CARGA
+
+				if(Players[0].Bateria < 100){
+					if ((cube.position.z > -10 && cube.position.z < -5) && (cube.position.x > -5 && cube.position.x < 5)){
+						Players[0].Bateria+=.1; 
+					}
+				}
+
+				if(Players[1].Bateria < 100){
+					if ((cube2.position.z > -10 && cube2.position.z < -5) && (cube2.position.x > -5 && cube2.position.x < 5)){
+						Players[1].Bateria+=.1; 
+					}
+				}
+			////DESCARGADOS
+			if(Players[0].Bateria<0){
+				cube.position.z = -8;
+				cube.position.x = 0;
+				Players[0].Descargado=true;
+				Players[0].Turbo=false;
+			}
+			if(Players[0].Bateria>30)
+				Players[0].Descargado = false;
+
+			if(Players[1].Bateria<0){
+				cube2.position.z = -8;
+				cube2.position.x = 0;
+				Players[1].Descargado=true;
+				Players[1].Turbo=false;
+			}
+			if(Players[1].Bateria>30)
+				Players[1].Descargado = false;
+				
+					
+			///////////////////////
+			////RECOGER OBJETOS
+			if(PickArray[0].Recogido == true && PickArray[0].Entregado==false){
 				PickArray[0].Objeto.position.x = PickArray[0].Seguir.position.x;
 				PickArray[0].Objeto.position.z = PickArray[0].Seguir.position.z;
 			}
 			if (PickArray[0].Entregado == false) {
 				if ((testobj.position.x > -5 && testobj.position.x < 5) && (testobj.position.z > 15)) {
 					//PickArray[0].Objeto.remove();
-					testobj.position.y = 10;
-					PuntajeJ1++;
-					PickArray[0].Entregado = true;
+						testobj.position.y = 10;
+						if(PickArray[0].Seguir==cube)
+							Players[0].Puntaje+=1;
+						else
+							Players[1].Puntaje+=1
+						
+							PickArray[0].Entregado = true;
 					//PickArray[0].Objeto.remove();
 				}
 			}
-
-			if (keys["E"]) {
-				var distance = Math.sqrt(((testobj.position.x - cube.position.x) ** 2) + ((testobj.position.x - cube.position.x) ** 2));
-				if (distance < 1.6 && PickArray[0].Recogido == false) {
+			
+			if (keys["E"]){				
+				var distance = Math.sqrt(((testobj.position.x - cube.position.x)**2) + ((testobj.position.z - cube.position.z)**2));
+				if(distance < 1.6 && PickArray[0].Recogido == false ){
 					PickArray[0].Objeto = testobj;
 					PickArray[0].Seguir = cube;
 					PickArray[0].Recogido = true;
 					P1WO = true;
 				}
 			}
-			else if (keys["Q"]) {
-				if (PickArray[0].Recogido == true) {
+			else if(keys["Q"]){
+				if(PickArray[0].Recogido == true && PickArray[0].Seguir == cube){
+					PickArray[0].Seguir = testobj
+					PickArray[0].Recogido = false
+					P1WO = false;
+				}
+
+			}
+
+			if (keys["O"]){				
+				var distance = Math.sqrt(((testobj.position.x - cube2.position.x)**2) + ((testobj.position.z - cube2.position.z)**2));
+				if(distance < 1.6 && PickArray[0].Recogido == false ){
+					PickArray[0].Objeto = testobj;
+					PickArray[0].Seguir = cube2;
+					PickArray[0].Recogido = true;	
+					P1WO = true;		
+				}
+			}
+			else if(keys["U"]){
+				if(PickArray[0].Recogido == true && PickArray[0].Seguir == cube2){
 					PickArray[0].Seguir = testobj
 					PickArray[0].Recogido = false
 					P1WO = false;
@@ -147,84 +210,96 @@
 
 			}
 			/////////////////
-			if (keys["A"]) {
-				cube.rotation.y = (90 * Math.PI) / 180;
-				yaw = 5;
-				moveS1 = true;
-			} else if (keys["D"]) {
-				cube.rotation.y = (270 * Math.PI) / 180;
-				yaw = -5;
-				moveS1 = true;
+			////TURBO
+			if(keys["R"] && Players[0].Descargado==false){
+				Players[0].Turbo = !Players[0].Turbo;
 			}
-			if (keys["W"]) {
-				cube.rotation.y = (0 * Math.PI) / 180;
-				if (keys["A"])
-					cube.rotation.y = (45 * Math.PI) / 180;
-				else if (keys["D"])
-					cube.rotation.y = (315 * Math.PI) / 180;
-				forward = -5;
-				moveF1 = true;
-			} else if (keys["S"]) {
-				cube.rotation.y = (180 * Math.PI) / 180;
-				if (keys["A"])
-					cube.rotation.y = (135 * Math.PI) / 180;
-				else if (keys["D"])
-					cube.rotation.y = (225 * Math.PI) / 180;
-				forward = 5;
-				moveF1 = true;
+			if(keys["P"] && Players[1].Descargado==false){
+				Players[1].Turbo = !Players[1].Turbo;
 			}
-			/*var yaw2 = 0;
-			var forward2 = 0;
-			var moveF2 = false;
-			var moveS2 = false;
-			if (keys["J"]) {
-				cube2.rotation.y = (90 * Math.PI) / 180;
+			/////////////////
 
-				yaw2 = 5;
-				moveS2 = true;
-			} else if (keys["L"]) {
-				cube2.rotation.y = (270 * Math.PI) / 180;
-				yaw2 = -5;
-				moveS2 = true;
+
+			
+			if(Players[0].Bateria > 0 && Players[0].Descargado==false){
+				if (keys["A"]) {
+					cube.rotation.y= (90 * Math.PI)/180;
+					Players[0].Bateria-=.05;
+					yaw = 5;
+					moveS1 = true;
+				} else if (keys["D"]) {
+					cube.rotation.y= (270 * Math.PI)/180;
+					Players[0].Bateria-=.05;
+					yaw = -5;
+					moveS1 = true;
+				}
+				if (keys["W"]) {
+					cube.rotation.y = (0 * Math.PI)/180;
+					Players[0].Bateria-=.05;
+					if(keys["A"])
+						cube.rotation.y = (45 * Math.PI)/180;
+					else if(keys["D"])
+						cube.rotation.y = (315 * Math.PI)/180;
+					forward = -5;
+					moveF1=true;
+				} else if (keys["S"]) {
+					cube.rotation.y= (180 * Math.PI)/180;
+					Players[0].Bateria-=.05;
+					if(keys["A"])
+						cube.rotation.y = (135 * Math.PI)/180;
+					else if(keys["D"])
+						cube.rotation.y = (225 * Math.PI)/180;
+					forward = 5;
+					moveF1=true;
+				}
+				if(Players[0].Turbo){
+					yaw=yaw*2;
+					forward= forward*2;
+					Players[0].Bateria-=.05;
+				}
+
 			}
-			if (keys["I"]) {
-				cube2.rotation.y = (0 * Math.PI) / 180;
-				if (keys["J"])
-					cube2.rotation.y = (45 * Math.PI) / 180;
-				else if (keys["L"])
-					cube2.rotation.y = (315 * Math.PI) / 180;
-				forward2 = -5;
-				moveF2 = true;
-			} else if (keys["K"]) {
-				cube2.rotation.y = (180 * Math.PI) / 180;
-				if (keys["J"])
-					cube2.rotation.y = (135 * Math.PI) / 180;
-				else if (keys["L"])
-					cube2.rotation.y = (225 * Math.PI) / 180;
-				forward2 = 5;
-				moveF2 = true;
-
-			}*/
-
 			var yaw2 = 0;
 			var forward2 = 0;
 			var moveF2 = false;
 			var moveS2 = false;
-			if (keys["J"]) {
-				pos2.x += 5 * deltaTime;
-			} else if (keys["L"]) {
-				pos2.x -= 5 * deltaTime;
-			}
-			if (keys["I"]) {
-				pos2.z += 5 * deltaTime;
-			} else if (keys["K"]) {
-				pos2.z -= 5 * deltaTime;
-
-			}
-			
-			cube2.position.copy(pos2Ant);
-			if (!cube2.position.equals(pos2)) {
-				cube2.lookAt(pos2);
+			if(Players[1].Bateria > 0 && Players[1].Descargado==false){
+				if (keys["J"]) {
+					cube2.rotation.y= (90 * Math.PI)/180;
+					Players[1].Bateria-=.05;
+					yaw2 = 5;
+					moveS2=true;
+				} else if (keys["L"]) {
+					cube2.rotation.y= (270 * Math.PI)/180;
+					Players[1].Bateria-=.05;
+					yaw2 = -5;
+					moveS2=true;
+				}
+				if (keys["I"]) {
+					cube2.rotation.y = (0 * Math.PI)/180;
+					Players[1].Bateria-=.05;
+					if(keys["J"])
+						cube2.rotation.y = (45 * Math.PI)/180;
+					else if(keys["L"])
+						cube2.rotation.y = (315 * Math.PI)/180;
+					forward2 = -5;
+					moveF2 = true;
+				} else if (keys["K"]) {
+					cube2.rotation.y= (180 * Math.PI)/180;
+					Players[1].Bateria-=.05;
+					if(keys["J"])
+						cube2.rotation.y = (135 * Math.PI)/180;
+					else if(keys["L"])
+						cube2.rotation.y = (225 * Math.PI)/180;
+					forward2 = 5;
+					moveF2 = true;
+				
+				}
+				if(Players[1].Turbo){
+					yaw2=yaw2*2;
+					forward2= forward2*2;
+					Players[1].Bateria-=.05;
+				}
 			}
 
 
@@ -256,11 +331,14 @@
 				pos2Ant.copy(pos2);
 			}
 			//cube.position.copy(facing1Prev);
-			$('#x').text(pos2.x + ', ' + cube2.position.x);
-			$('#z').text(pos2.z + ', ' + cube2.position.z);
+			//$('#x').text(ex);
+			//$('#y').text(sed);
+			//$('#z').text(angle);
 		}
 
 		function setupScene() {
+			Players.push(new Player(0, 100, false));
+			Players.push(new Player(0, 100, false));
 			var visibleSize = { width: window.innerWidth, height: window.innerHeight };
 			clock = new THREE.Clock();
 			scene = new THREE.Scene();
