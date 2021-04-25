@@ -17,6 +17,7 @@
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
     <script type="text/javascript" src="js/scripts.js"></script>
+    <script type="text/javascript" src="js/menu.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="shortcut icon" href="img/icono.png" />
     <title>Rey Pide</title>
@@ -31,13 +32,13 @@
                 <img src="img/logo.png" alt="no hay" style="width: auto; height: 50vh;" class="overlap mt-5">
             </div>
             <div style="height: 10vh;"></div>
-            <div class="jugar" onclick="redirect('game.html')">
+            <div class="jugar" data-toggle="modal" data-target="#modoJuego">
                 <div class="playBTN overlap"></div>
                 <i class="fa fa-play overlap" style="font-size:15vh;color:whitesmoke"></i>
                 <div class="jugarBTN overlap">JUGAR</div>
             </div>
         </div>
-
+        <!-- onclick="redirect('game.html')" -->
         <div class="perfil">
             <div class="pfCard">
                 <div class="cuadroFoto">
@@ -210,126 +211,144 @@
                         </tr>
                         <tr class="onePlace">
                             <td>#1</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira3ck</td>
                             <td class="pts">333333333333333333333333333333</td>
                         </tr>
                         <tr class="twoPlace">
                             <td>#2</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira4ck</td>
                             <td class="pts">413413413413413413413</td>
                         </tr>
                         <tr class="threePlace">
                             <td>#3</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira5ck</td>
                             <td class="pts">11235813243455</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
                         </tr>
                         <tr class="nPlace">
                             <td>#4</td>
-                            <td class="pfp"><img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
+                            <td class="pfp"><img
+                                    src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360"
                                     alt="error"></td>
                             <td>ira6ck</td>
                             <td class="pts">314159265</td>
@@ -339,6 +358,43 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade" id="modoJuego" tabindex="-1" aria-labelledby="modoJuegoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modoJuegoLabel">Elije el modo de juego</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body user-select-none">
+                    <div class="row no-gutters" id="modoBTN">
+                        <div class="col-6 text-center overflow-hidden">
+                            <div class="modoJuegoBTN brillito" id="localBTN">Juego Local</div>
+                        </div>
+                        <div class="col-6 text-center overflow-hidden">
+                            <div class="modoJuegoBTN brillito" id="onlineBTN">Online</div>
+                        </div>
+                    </div>
+                    <div class="row no-gutters" id="nivelesBTN">
+                        <div class="col-4 text-center overflow-hidden">
+                            <div class="modoJuegoBTN brillito">Nivel 1</div>
+                        </div>
+                        <div class="col-4 text-center overflow-hidden">
+                            <div class="modoJuegoBTN brillito">Nivel 2</div>
+                        </div>
+                        <div class="col-4 text-center overflow-hidden">
+                            <div class="modoJuegoBTN brillito">Nivel 3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </body>
 
 </html>
