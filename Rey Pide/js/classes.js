@@ -9,7 +9,10 @@ class Pickable {
 }
 
 class Player {
-    constructor(Puntaje){
-        
+    constructor(Score, Battery, Nitro){
+        this.Bateria = Battery;
+        this.Puntaje = Score;
+        this.Turbo = Nitro;
+        this.Aturdido = false;
     }
 }
