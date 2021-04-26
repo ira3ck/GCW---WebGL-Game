@@ -29,7 +29,7 @@ var objects = [];
 var clock;
 var deltaTime;
 var keys = {};
-var cube, cube2, testobj;
+var cube, cube2, testobj, pick2, pick3, pick4, pick5;
 var camMove;
 var facing1Prev, facing2Prev;
 var posT;
@@ -82,6 +82,11 @@ $(document).on('keydown', function (e) {
 });
 
 function render() {
+    PickArray[0].Objeto = testobj;
+    PickArray[1].Objeto = pick2;
+    PickArray[2].Objeto = pick3;
+    PickArray[3].Objeto = pick4;
+    PickArray[4].Objeto = pick5;
     requestAnimationFrame(render);
 
     $("#x").text(Players[0].Bateria);
@@ -136,60 +141,66 @@ function render() {
 
     ///////////////////////
     ////RECOGER OBJETOS
-    if (PickArray[0].Recogido == true && PickArray[0].Entregado == false) {
-        PickArray[0].Objeto.position.x = PickArray[0].Seguir.position.x;
-        PickArray[0].Objeto.position.z = PickArray[0].Seguir.position.z;
-    }
-    if (PickArray[0].Entregado == false) {
-
-        if (testobj.position.distanceTo(meta) < 3.0) {
-            //PickArray[0].Objeto.remove();
-            testobj.position.y = -5;
-            if (PickArray[0].Seguir == cube)
-                Players[0].Puntaje += 1;
-            else
-                Players[1].Puntaje += 1
-
-            PickArray[0].Entregado = true;
-            //PickArray[0].Objeto.remove();
+    for(var i=0;i<5;i++){
+        if (PickArray[i].Recogido == true && PickArray[i].Entregado == false) {
+            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
+            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
         }
-
+        if (PickArray[i].Entregado == false) {
+    
+            if (PickArray[i].Objeto.position.distanceTo(meta) < 3.0) {
+                //PickArray[0].Objeto.remove();
+                PickArray[i].Objeto.position.y = -5;
+                if (PickArray[i].Seguir == cube)
+                    Players[0].Puntaje += 1;
+                else
+                    Players[1].Puntaje += 1
+    
+                PickArray[i].Entregado = true;
+                //PickArray[0].Objeto.remove();
+            }
+    
+        }
     }
 
     if (keys["E"]) {
-        var distance = Math.sqrt(((testobj.position.x - cube.position.x) ** 2) + ((testobj.position.z - cube.position.z) ** 2));
-        if (distance < 1.6 && PickArray[0].Recogido == false) {
-            PickArray[0].Objeto = testobj;
-            PickArray[0].Seguir = cube;
-            PickArray[0].Recogido = true;
-            P1WO = true;
+        for(var i=0;i<5;i++){
+            var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube.position.z) ** 2));
+            if (distance < 1.6 && PickArray[i].Recogido == false) {
+                PickArray[i].Seguir = cube;
+                PickArray[i].Recogido = true;
+                P1WO = true;
+            }
         }
     }
     else if (keys["Q"]) {
-        if (PickArray[0].Recogido == true && PickArray[0].Seguir == cube) {
-            PickArray[0].Seguir = testobj
-            PickArray[0].Recogido = false
-            P1WO = false;
+        for(var i=0;i<5;i++){
+            if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
+               
+                PickArray[i].Recogido = false
+                P1WO = false;
+            }
         }
-
     }
 
     if (keys["O"]) {
-        var distance = Math.sqrt(((testobj.position.x - cube2.position.x) ** 2) + ((testobj.position.z - cube2.position.z) ** 2));
-        if (distance < 1.6 && PickArray[0].Recogido == false) {
-            PickArray[0].Objeto = testobj;
-            PickArray[0].Seguir = cube2;
-            PickArray[0].Recogido = true;
-            P1WO = true;
+        for(var i=0;i<5;i++){
+            var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube2.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube2.position.z) ** 2));
+            if (distance < 1.6 && PickArray[i].Recogido == false) {
+                PickArray[i].Seguir = cube2;
+                PickArray[i].Recogido = true;
+                P1WO = true;
+            }
         }
     }
     else if (keys["U"]) {
-        if (PickArray[0].Recogido == true && PickArray[0].Seguir == cube2) {
-            PickArray[0].Seguir = testobj
-            PickArray[0].Recogido = false
-            P1WO = false;
+        for(var i=0;i<5;i++){
+            if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
+                PickArray[i].Seguir = PickArray[i].Objeto;
+                PickArray[i].Recogido = false
+                P1WO = false;
+            }
         }
-
     }
     /////////////////
     ////TURBO
@@ -369,7 +380,7 @@ function setupScene() {
         scene.add(cube);
     });
 
-    loadFBX("modelos/bot/fbx/bot.fbx", (object) => {
+    loadFBX("modelos/bot/fbx2/bot.fbx", (object) => {
         cube2 = object;
         cube2.position.x = -8;
         cube2.position.y = 0.5;
@@ -379,9 +390,10 @@ function setupScene() {
         scene.add(cube2);
     });
 
-    loadFBX("modelos/cubo.fbx", (object) => {
+    loadFBX("modelos/stage3/objetos3/diamante/diamont.fbx", (object) => {
         testobj = object;
-        testobj.position.set(0, 0, 0);
+        testobj.position.set(10, 0, 0);
+        testobj.scale.set(0.5, 0.5, 0.5);
         testobj.castShadow = true;
         testobj.receiveShadow = true;
         scene.add(testobj);
@@ -403,6 +415,40 @@ function setupScene() {
         object.receiveShadow = true;
         scene.add(object);
     });
+     ////RECOGIBLES
+     loadFBX("modelos/stage3/objetos3/gold/coin.fbx", (object) => {
+        pick2 = object;
+        pick2.position.set(7, 0, -5);
+        pick2.scale.set(.1,.1,.1);
+        pick2.castShadow = true;
+        pick2.receiveShadow = true;
+        scene.add(pick2);
+    });
+    loadFBX("modelos/stage3/objetos3/jar/jar.fbx", (object) => {
+        pick3 = object;
+        pick3.position.set(3, 0, -8);
+        pick3.scale.set(.1,.1,.1);
+
+        pick3.castShadow = true;
+        pick3.receiveShadow = true;
+        scene.add(pick3);
+    });
+    loadFBX("modelos/stage3/objetos3/ring/ring.fbx", (object) => {
+        pick4 = object;
+        pick4.position.set(-3, 2, -8);
+        pick4.scale.set(.05,.05,.05);
+        pick4.rotation.set(0, 0, 90);
+        pick4.castShadow = true;
+        pick4.receiveShadow = true;
+        scene.add(pick4);
+    });
+    loadFBX("modelos/stage3/objetos3/statue/venus_lowpoly.fbx", (object) => {
+        pick5 = object;
+        pick5.position.set(-9, 0, 0);
+        pick5.castShadow = true;
+        pick5.receiveShadow = true;
+        scene.add(pick5);
+    });
 
     const light = new THREE.PointLight(0xffffff, 1, 100);
     light.position.set(3, 15, 20);
@@ -420,6 +466,10 @@ function setupScene() {
 
     //Pickables.push(testobj);
     PickArray.push(new Pickable(testobj, false, testobj, false));
+    PickArray.push(new Pickable(pick2, false, pick2, false));
+    PickArray.push(new Pickable(pick3, false, pick3, false));
+    PickArray.push(new Pickable(pick4, false, pick4, false));
+    PickArray.push(new Pickable(pick5, false, pick5, false));
     //scene.add(PickArray);
     //var lol = new Pickable()
     //posT.copy(cube.position);

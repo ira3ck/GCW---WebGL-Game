@@ -14,5 +14,6 @@ class Player {
         this.Puntaje = Score;
         this.Turbo = Nitro;
         this.Aturdido = false;
+        this.Descargado= false;
     }
 }
