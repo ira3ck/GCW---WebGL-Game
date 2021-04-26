@@ -42,6 +42,13 @@ var angle;
 var meta;
 
 $(document).ready(function () {
+
+    $('#pauseMenu').hide();
+
+    $('#volver').click(function () {
+        $('#pauseMenu').hide();
+    });
+
     setupScene();
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('keyup', onKeyUp);
@@ -66,6 +73,13 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 
 }
+
+$(document).on('keydown', function (e) {
+    //if (e.key == "Enter") $('.save').click();
+    if (e.key == "Escape") {
+        $('#pauseMenu').toggle();
+    }
+});
 
 function render() {
     requestAnimationFrame(render);
@@ -347,7 +361,7 @@ function setupScene() {
 
     loadFBX("modelos/bot/fbx/bot.fbx", (object) => {
         cube = object;
-        cube.position.x = 5;
+        cube.position.x = 8;
         cube.position.y = 0.5;
         cube.scale.set(0.2, 0.2, 0.2);
         cube.castShadow = true;
@@ -357,7 +371,7 @@ function setupScene() {
 
     loadFBX("modelos/bot/fbx/bot.fbx", (object) => {
         cube2 = object;
-        cube2.position.x = -5;
+        cube2.position.x = -8;
         cube2.position.y = 0.5;
         cube2.scale.set(0.2, 0.2, 0.2);
         cube2.castShadow = true;
@@ -373,7 +387,7 @@ function setupScene() {
         scene.add(testobj);
     });
 
-    loadFBX("modelos/stage1/fbx/stage1N.fbx", (object) => {
+    loadFBX("modelos/stage3/fbx/stage3.fbx", (object) => {
         object.rotateY(THREE.Math.degToRad(180));
         object.castShadow = true;
         object.receiveShadow = true;
