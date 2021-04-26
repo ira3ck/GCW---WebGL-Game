@@ -45,7 +45,6 @@
 	<script src="js/scripts.js"></script>
 	<script src="js/classes.js"></script>
 	<script type="text/javascript">
-
 		var scene;
 		var camera;
 		var renderer;
@@ -58,6 +57,7 @@
 		var camMove;
 		var facing1Prev, facing2Prev;
 		var posT;
+		var xAxis, zAxis;
 		var PickArray = []
 		var P1WO = false;
 		var PuntajeJ1 = 0;
@@ -103,7 +103,6 @@
 			renderer.setSize(window.innerWidth, window.innerHeight);
 
 		}
-
 
 		function render() {
 			requestAnimationFrame(render);
@@ -160,8 +159,8 @@
 				PickArray[0].Objeto.position.x = PickArray[0].Seguir.position.x;
 				PickArray[0].Objeto.position.z = PickArray[0].Seguir.position.z;
 			}
-			if (PickArray[0].Entregado == false) {
-				if ((testobj.position.x > -5 && testobj.position.x < 5) && (testobj.position.z > 15)) {
+			if(PickArray[0].Entregado == false){
+				if((testobj.position.x > -5 && testobj.position.x < 5) && (testobj.position.z > 15)){
 					//PickArray[0].Objeto.remove();
 						testobj.position.y = 10;
 						if(PickArray[0].Seguir==cube)
@@ -179,8 +178,8 @@
 				if(distance < 1.6 && PickArray[0].Recogido == false ){
 					PickArray[0].Objeto = testobj;
 					PickArray[0].Seguir = cube;
-					PickArray[0].Recogido = true;
-					P1WO = true;
+					PickArray[0].Recogido = true;	
+					P1WO = true;		
 				}
 			}
 			else if(keys["Q"]){
@@ -302,21 +301,24 @@
 				}
 			}
 
-
-
 			angle = cube.position.angleTo(facing1Prev);
 			var orientation = cube.position.x * facing1Prev.z - cube.position.z * facing1Prev.x;
 			if (orientation > 0) angle = 2 * Math.PI - angle;
-
-			if (moveF1)
+			//cube.rotation.y = angle;
+			//cube.rotateY(angle);
+			//cube.translateOnAxis(zAxis, -forward * deltaTime);
+			//cube.translateOnAxis(xAxis, yaw * deltaTime);
+			if(moveF1)
 				cube.position.z += -forward * deltaTime;
-			if (moveS1)
+			if(moveS1)
 				cube.position.x += yaw * deltaTime;
 
-			/*if (moveF2)
+			if(moveF2)
 				cube2.position.z += -forward2 * deltaTime;
-			if (moveS2)
-				cube2.position.x += yaw2 * deltaTime;*/
+			if(moveS2)
+				cube2.position.x += yaw2 * deltaTime;
+			//cube2.translateZ(-forward2 * deltaTime);
+			//cube2.translateX(yaw2 * deltaTime);
 
 			camMove.position.x = (cube.position.x + cube2.position.x) / 20;
 			camMove.position.z = (cube.position.z + cube2.position.z) / 20;
@@ -324,12 +326,8 @@
 
 
 			renderer.render(scene, camera);
-			$('#y').text(pos2.y + ', ' + cube2.position.y);
 
 			facing1Prev.copy(cube.position);
-			if (!pos2Ant.equals(pos2)) {
-				pos2Ant.copy(pos2);
-			}
 			//cube.position.copy(facing1Prev);
 			//$('#x').text(ex);
 			//$('#y').text(sed);
@@ -349,11 +347,6 @@
 			camMove = new THREE.Object3D();
 			camMove.position.set(0, 0, 0);
 			scene.add(camMove);
-
-			pos2 = new THREE.Vector3();
-			pos2.set(-5, 0, 0);
-			pos2Ant = new THREE.Vector3();
-			pos2Ant.set(-5, 0, 0.3);
 
 			renderer = new THREE.WebGLRenderer({ precision: "mediump" });
 			renderer.setClearColor(new THREE.Color(0, 0, 0));
@@ -387,12 +380,13 @@
 				testobj.position.x = -5;
 				scene.add(testobj);
 			});
-
-			//Pickables.push(testobj);
+		    //Pickables.push(testobj);
 			PickArray.push(new Pickable(testobj, false, testobj, false));
 			scene.add(PickArray);
 			//var lol = new Pickable()
-
+			//posT.copy(cube.position);
+			xAxis = new THREE.Vector3(1, 0, 0);
+			zAxis = new THREE.Vector3(0, 0, 1);
 			facing1Prev = new THREE.Vector3(0, 0, 1);
 			facing2Prev = new THREE.Vector3(0, 0, 1);
 
