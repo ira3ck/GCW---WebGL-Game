@@ -379,24 +379,32 @@ background-color: #eb9846;
   display: block;
 }
 
-#pauseMenu{
+.gameScreen{
+  background-image: url("../img/fondo.jpg");
   position: absolute;
   top: 0%;
   z-index: 1000;
   width: 100%;
   height: 100%;
-  background-color: rgb(128, 128, 128);
-  opacity: 50%;
   display: none;
+  
+  background-size: 60vh, 60vw;
+  background-repeat: repeat;
+  background-position: 0, 0;
+  animation: 50s desliz infinite linear;
+}
+#pauseMenu{
+  opacity: 50%;
+  background-color: rgb(128, 128, 128);
 }
 
 .pauseBTN{
   cursor: pointer;
-  opacity: 100% !important;
-  background-color: black;
+  background-color: #eb9846;
   color: aliceblue;
   width: 100%;
   max-width: 30vw;
+  min-width: 200px;
   height: 100%;
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -405,11 +413,16 @@ background-color: #eb9846;
   
   border-radius: 30px;
   font-size: 3vh;
+  overflow: hidden;
 }
 
 .pauseBTN:hover{
-  background-color: azure;
-  color: black;
+  background-color: #5e5ec2;
+}
+
+.infoScreen{
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color: aliceblue;
 }
 
 .onePlace{

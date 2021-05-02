@@ -2,6 +2,10 @@ function redirect(site) {
     window.location.href = site;
 }
 
+function reload() {
+    location.reload();
+}
+
 $(document).ready(function () {
 
     var soundIconIsMuted = false;

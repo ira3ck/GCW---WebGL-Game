@@ -398,8 +398,8 @@ function setupScene() {
         testobj = object;
         testobj.position.set(10, 0, 0);
         testobj.scale.set(0.5, 0.5, 0.5);
-        testobj.castShadow = true;
-        testobj.receiveShadow = true;
+        testobj.castShadow = false;
+        testobj.receiveShadow = false;
         scene.add(testobj);
     });
 

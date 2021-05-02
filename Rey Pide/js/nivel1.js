@@ -2,6 +2,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 
 import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js';
 
+
 class Pickable {
     constructor(objeto, reco, seguirA, entregado) {
         this.Objeto = objeto;
@@ -32,14 +33,17 @@ var keys = {};
 var cube, cube2, testobj, pick2, pick3, pick4, pick5;
 var camMove;
 var facing1Prev;
-var P1WO = false;
+var angle;
 
 var PickArray = [];
 
 var Players = [];
 var meta;
 
-var reloj = 10;
+var reloj = 2;
+var countDown = 10;
+
+var puntuacion = 400, puntuacion2 = 300;
 
 
 $(document).ready(function () {
@@ -90,243 +94,244 @@ function render() {
     PickArray[4].Objeto = pick5;
     requestAnimationFrame(render);
 
-    $("#x").text(Players[0].Bateria);
-
-    $("#lifeP1").css('width', Players[0].Bateria + '%')
-
-    $("#y").text(Players[1].Bateria);
-
-    $("#lifeP2").css('width', 'calc(' + Players[1].Bateria + '% - 40px)')
-
-    $("#z").text("ScoreP1:" + Players[0].Puntaje + " ScoreP2:" + Players[1].Puntaje);
-
     deltaTime = clock.getDelta();
-    var moveF1 = false;
-    var moveS1 = false;
 
-    var yaw = 0;
-    var forward = 0;
-    ///////////////////////
-    ////CARGA
+    if (contador(deltaTime) && $('#pauseMenu').is(':hidden') && elTiempo(deltaTime)) {
+        $('.cargando').hide();
 
-    if (Players[0].Bateria < 100) {
-        if ((cube.position.z > -10 && cube.position.z < -5) && (cube.position.x > -5 && cube.position.x < 5)) {
-            Players[0].Bateria += .1;
-        }
-    }
+        var moveF1 = false;
+        var moveS1 = false;
 
-    if (Players[1].Bateria < 100) {
-        if ((cube2.position.z > -10 && cube2.position.z < -5) && (cube2.position.x > -5 && cube2.position.x < 5)) {
-            Players[1].Bateria += .1;
-        }
-    }
-    ////DESCARGADOS
-    if (Players[0].Bateria < 0) {
-        cube.position.z = -8;
-        cube.position.x = 0;
-        Players[0].Descargado = true;
-        Players[0].Turbo = false;
-    }
-    if (Players[0].Bateria > 30)
-        Players[0].Descargado = false;
+        var yaw = 0;
+        var forward = 0;
+        ///////////////////////
+        ////CARGA
 
-    if (Players[1].Bateria < 0) {
-        cube2.position.z = -8;
-        cube2.position.x = 0;
-        Players[1].Descargado = true;
-        Players[1].Turbo = false;
-    }
-    if (Players[1].Bateria > 30)
-        Players[1].Descargado = false;
-
-
-    ///////////////////////
-    ////RECOGER OBJETOS
-
-    for (var i = 0; i < 5; i++) {
-        if (PickArray[i].Recogido == true && PickArray[i].Entregado == false) {
-            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
-            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
-        }
-        if (PickArray[i].Entregado == false) {
-
-            if (PickArray[i].Objeto.position.distanceTo(meta) < 3.0) {
-                //PickArray[0].Objeto.remove();
-                PickArray[i].Objeto.position.y = -5;
-                if (PickArray[i].Seguir == cube)
-                    Players[0].Puntaje += 1;
-                else
-                    Players[1].Puntaje += 1
-
-                PickArray[i].Entregado = true;
-                //PickArray[0].Objeto.remove();
+        if (Players[0].Bateria < 100) {
+            if ((cube.position.z > -10 && cube.position.z < -5) && (cube.position.x > -5 && cube.position.x < 5)) {
+                Players[0].Bateria += .1;
             }
-
         }
-    }
 
-    if (keys["E"]) {
+        if (Players[1].Bateria < 100) {
+            if ((cube2.position.z > -10 && cube2.position.z < -5) && (cube2.position.x > -5 && cube2.position.x < 5)) {
+                Players[1].Bateria += .1;
+            }
+        }
+        ////DESCARGADOS
+        if (Players[0].Bateria < 0) {
+            cube.position.z = -8;
+            cube.position.x = 0;
+            Players[0].Descargado = true;
+            Players[0].Turbo = false;
+        }
+        if (Players[0].Bateria > 30)
+            Players[0].Descargado = false;
+
+        if (Players[1].Bateria < 0) {
+            cube2.position.z = -8;
+            cube2.position.x = 0;
+            Players[1].Descargado = true;
+            Players[1].Turbo = false;
+        }
+        if (Players[1].Bateria > 30)
+            Players[1].Descargado = false;
+
+
+        ///////////////////////
+        ////RECOGER OBJETOS
+
         for (var i = 0; i < 5; i++) {
-            var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube.position.z) ** 2));
-            if (distance < 1.6 && PickArray[i].Recogido == false) {
-                PickArray[i].Seguir = cube;
-                PickArray[i].Recogido = true;
-                P1WO = true;
+            if (PickArray[i].Recogido == true && PickArray[i].Entregado == false) {
+                PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
+                PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
+            }
+            if (PickArray[i].Entregado == false) {
+
+                if (PickArray[i].Objeto.position.distanceTo(meta) < 3.0) {
+                    //PickArray[0].Objeto.remove();
+                    PickArray[i].Objeto.position.y = -5;
+                    if (PickArray[i].Seguir == cube)
+                        Players[0].Puntaje += 1;
+                    else
+                        Players[1].Puntaje += 1
+
+                    PickArray[i].Entregado = true;
+                    //PickArray[0].Objeto.remove();
+                }
+
             }
         }
-    }
-    else if (keys["Q"]) {
-        for (var i = 0; i < 5; i++) {
-            if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
 
-                PickArray[i].Recogido = false
-                P1WO = false;
+        if (keys["E"]) {
+            for (var i = 0; i < 5; i++) {
+                var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube.position.z) ** 2));
+                if (distance < 1.6 && PickArray[i].Recogido == false) {
+                    PickArray[i].Seguir = cube;
+                    PickArray[i].Recogido = true;
+                    P1WO = true;
+                }
             }
         }
-    }
+        else if (keys["Q"]) {
+            for (var i = 0; i < 5; i++) {
+                if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
 
-    if (keys["O"]) {
-        for (var i = 0; i < 5; i++) {
-            var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube2.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube2.position.z) ** 2));
-            if (distance < 1.6 && PickArray[i].Recogido == false) {
-                PickArray[i].Seguir = cube2;
-                PickArray[i].Recogido = true;
-                P1WO = true;
+                    PickArray[i].Recogido = false
+                    P1WO = false;
+                }
             }
         }
-    }
-    else if (keys["U"]) {
-        for (var i = 0; i < 5; i++) {
-            if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
-                PickArray[i].Seguir = PickArray[i].Objeto;
-                PickArray[i].Recogido = false
-                P1WO = false;
+
+        if (keys["O"]) {
+            for (var i = 0; i < 5; i++) {
+                var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube2.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube2.position.z) ** 2));
+                if (distance < 1.6 && PickArray[i].Recogido == false) {
+                    PickArray[i].Seguir = cube2;
+                    PickArray[i].Recogido = true;
+                    P1WO = true;
+                }
             }
         }
-    }
-    /////////////////
-    ////TURBO
-    if (keys["R"] && Players[0].Descargado == false) {
-        Players[0].Turbo = !Players[0].Turbo;
-    }
-    if (keys["P"] && Players[1].Descargado == false) {
-        Players[1].Turbo = !Players[1].Turbo;
-    }
-    /////////////////
-
-
-
-    if (Players[0].Bateria > 0 && Players[0].Descargado == false) {
-
-        if (keys["A"]) {
-            cube.rotation.y = (90 * Math.PI) / 180;
-            Players[0].Bateria -= .05;
-            yaw = 5;
-            moveS1 = true;
-        } else if (keys["D"]) {
-            cube.rotation.y = (270 * Math.PI) / 180;
-            Players[0].Bateria -= .05;
-            yaw = -5;
-            moveS1 = true;
+        else if (keys["U"]) {
+            for (var i = 0; i < 5; i++) {
+                if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
+                    PickArray[i].Seguir = PickArray[i].Objeto;
+                    PickArray[i].Recogido = false
+                    P1WO = false;
+                }
+            }
         }
-        if (keys["W"]) {
-            cube.rotation.y = (0 * Math.PI) / 180;
-            Players[0].Bateria -= .05;
-            if (keys["A"])
-                cube.rotation.y = (45 * Math.PI) / 180;
-            else if (keys["D"])
-                cube.rotation.y = (315 * Math.PI) / 180;
-            forward = -5;
-            moveF1 = true;
-        } else if (keys["S"]) {
-            cube.rotation.y = (180 * Math.PI) / 180;
-            Players[0].Bateria -= .05;
-            if (keys["A"])
-                cube.rotation.y = (135 * Math.PI) / 180;
-            else if (keys["D"])
-                cube.rotation.y = (225 * Math.PI) / 180;
-            forward = 5;
-            moveF1 = true;
+        /////////////////
+        ////TURBO
+        if (keys["R"] && Players[0].Descargado == false) {
+            Players[0].Turbo = !Players[0].Turbo;
         }
-
-        if (Players[0].Turbo) {
-            yaw = yaw * 2;
-            forward = forward * 2;
-            Players[0].Bateria -= .05;
+        if (keys["P"] && Players[1].Descargado == false) {
+            Players[1].Turbo = !Players[1].Turbo;
         }
+        /////////////////
 
-    }
-    var yaw2 = 0;
-    var forward2 = 0;
-    if (Players[1].Bateria > 0 && Players[1].Descargado == false) {
 
-        if (keys["J"]) {
-            cube2.rotation.y = (90 * Math.PI) / 180;
-            Players[1].Bateria -= 0.05;
-            yaw2 = 5;
-            moveS1 = true;
-        } else if (keys["L"]) {
-            cube2.rotation.y = (270 * Math.PI) / 180;
-            Players[1].Bateria -= 0.05;
-            yaw2 = -5;
-            moveS1 = true;
-        }
-        if (keys["I"]) {
-            cube2.rotation.y = (0 * Math.PI) / 180;
-            Players[1].Bateria -= 0.05;
-            if (keys["J"])
-                cube2.rotation.y = (45 * Math.PI) / 180;
-            else if (keys["L"])
-                cube2.rotation.y = (315 * Math.PI) / 180;
-            forward2 = -5;
-            moveF2 = true;
-        } else if (keys["K"]) {
-            cube2.rotation.y = (180 * Math.PI) / 180;
-            Players[1].Bateria -= 0.05;
-            if (keys["J"])
-                cube2.rotation.y = (135 * Math.PI) / 180;
-            else if (keys["L"])
-                cube2.rotation.y = (225 * Math.PI) / 180;
-            forward2 = 5;
-            moveF2 = true;
+
+        if (Players[0].Bateria > 0 && Players[0].Descargado == false) {
+
+            if (keys["A"]) {
+                cube.rotation.y = (90 * Math.PI) / 180;
+                Players[0].Bateria -= 0.05;
+                yaw = 5;
+                moveS1 = true;
+            } else if (keys["D"]) {
+                cube.rotation.y = (270 * Math.PI) / 180;
+                Players[0].Bateria -= 0.05;
+                yaw = -5;
+                moveS1 = true;
+            }
+            if (keys["W"]) {
+                cube.rotation.y = (0 * Math.PI) / 180;
+                Players[0].Bateria -= 0.05;
+                if (keys["A"])
+                    cube.rotation.y = (45 * Math.PI) / 180;
+                else if (keys["D"])
+                    cube.rotation.y = (315 * Math.PI) / 180;
+                forward = -5;
+                moveF1 = true;
+            } else if (keys["S"]) {
+                cube.rotation.y = (180 * Math.PI) / 180;
+                Players[0].Bateria -= 0.05;
+                if (keys["A"])
+                    cube.rotation.y = (135 * Math.PI) / 180;
+                else if (keys["D"])
+                    cube.rotation.y = (225 * Math.PI) / 180;
+                forward = 5;
+                moveF1 = true;
+            }
+
+            if (Players[0].Turbo) {
+                yaw = yaw * 2;
+                forward = forward * 2;
+                Players[0].Bateria -= .05;
+            }
 
         }
-        if (Players[1].Turbo) {
-            yaw2 = yaw2 * 2;
-            forward2 = forward2 * 2;
-            Players[1].Bateria -= 0.05;
+        var yaw2 = 0;
+        var forward2 = 0;
+        var moveF2 = false;
+        var moveS2 = false;
+        if (Players[1].Bateria > 0 && Players[1].Descargado == false) {
+            if (keys["J"]) {
+                cube2.rotation.y = (90 * Math.PI) / 180;
+                Players[1].Bateria -= 0.05;
+                yaw2 = 5;
+                moveS2 = true;
+            } else if (keys["L"]) {
+                cube2.rotation.y = (270 * Math.PI) / 180;
+                Players[1].Bateria -= 0.05;
+                yaw2 = -5;
+                moveS2 = true;
+            }
+            if (keys["I"]) {
+                cube2.rotation.y = (0 * Math.PI) / 180;
+                Players[1].Bateria -= 0.05;
+                if (keys["J"])
+                    cube2.rotation.y = (45 * Math.PI) / 180;
+                else if (keys["L"])
+                    cube2.rotation.y = (315 * Math.PI) / 180;
+                forward2 = -5;
+                moveF2 = true;
+            } else if (keys["K"]) {
+                cube2.rotation.y = (180 * Math.PI) / 180;
+                Players[1].Bateria -= 0.05;
+                if (keys["J"])
+                    cube2.rotation.y = (135 * Math.PI) / 180;
+                else if (keys["L"])
+                    cube2.rotation.y = (225 * Math.PI) / 180;
+                forward2 = 5;
+                moveF2 = true;
+
+            }
+            if (Players[1].Turbo) {
+                yaw2 = yaw2 * 2;
+                forward2 = forward2 * 2;
+                Players[1].Bateria -= .05;
+            }
         }
+
+        //Rotación de los objetos
+        for (var i = 0; i < PickArray.length; i++) {
+            PickArray[i].Objeto.rotateY(THREE.Math.degToRad(15) * deltaTime);
+        }
+
+        var orientation = cube.position.x * facing1Prev.z - cube.position.z * facing1Prev.x;
+        if (orientation > 0) angle = 2 * Math.PI - angle;
+        cube.position.z += -forward * deltaTime;
+        if (moveS1)
+            cube.position.x += yaw * deltaTime;
+
+        if (moveF2)
+            cube2.position.z += -forward2 * deltaTime;
+        if (moveS2)
+            cube2.position.x += yaw2 * deltaTime;
+
+        camMove.position.x = (cube.position.x + cube2.position.x) / 20;
+        camMove.position.z = (cube.position.z + cube2.position.z) / 20;
+
+        camera.lookAt(camMove.position);
+        camera.position.set(0, 15, camMove.position.z - 10);
+
+        updateHUD(Players);
+        highscore(puntuacion, puntuacion2);
+
+        renderer.render(scene, camera);
+
+        facing1Prev.copy(cube.position);
     }
 
-    //Rotación de los objetos
-    for (var i = 0; i < PickArray.length; i++) {
-        PickArray[i].Objeto.rotateY(THREE.Math.degToRad(15) * deltaTime);
-    }
-
-    cube.position.x += yaw * deltaTime;
-    cube.position.z += -forward * deltaTime;
-
-    cube2.position.z += -forward2 * deltaTime;
-    cube2.position.x += yaw2 * deltaTime;
-
-    camMove.position.x = (cube.position.x + cube2.position.x) / 20;
-    camMove.position.z = (cube.position.z + cube2.position.z) / 20;
-
-    camera.lookAt(camMove.position);
-    camera.position.set(0, 15, camMove.position.z - 10);
-
-
-    renderer.render(scene, camera);
-
-    facing1Prev.copy(cube.position);
-
-    elTiempo(deltaTime);
-    
 }
 
-function loadFBX(path, onLoadCallback) {
+function loadFBX(manager, path, onLoadCallback) {
 
-    var loader = new FBXLoader();
+    var loader = new FBXLoader(manager);
     loader.load(path, (object) => {
 
         object.traverse(function (child) {
@@ -344,18 +349,67 @@ function loadFBX(path, onLoadCallback) {
     });
 }
 
-function elTiempo(deltatime){
-    reloj -= 1 * deltatime;
-    if (Math.floor(reloj) < 0)
-        reloj = 0;
+//////////////////////////////////
+////Funciones que sirven mucho////
+//////////////////////////////////
 
+function elTiempo(deltatime) {
+    reloj -= 1 * deltatime;
+    if (Math.floor(reloj) < 0){
+        reloj = 0;
+        $('#gameOver').show();
+        return false;
+    }
     $('.tiempo').text(Math.floor(reloj));
+    return true;
 }
+
+function updateHUD(players) {
+    $("#x").text(players[0].Bateria);
+
+    $("#lifeP1").css('width', players[0].Bateria + '%')
+
+    $("#y").text(players[1].Bateria);
+
+    $("#lifeP2").css('width', 'calc(' + players[1].Bateria + '% - 40px)')
+
+    $("#z").text("ScoreP1:" + players[0].Puntaje + " ScoreP2:" + players[1].Puntaje);
+}
+
+function contador(deltatime) {
+    countDown -= 1 * deltatime;
+    if (Math.floor(countDown) < 0) {
+        countDown = 0;
+        return true;
+    }
+    return false;
+}
+
+function highscore(one, two){
+    if(one > two)
+    $('#highscore').text(one);
+    else
+    $('#highscore').text(two);
+}
+
+//////////////////////////////////
+//////////////////////////////////
+//////////////////////////////////
 
 
 function setupScene() {
 
     meta = new THREE.Vector3();
+
+    const path = "textures/level1/";
+    const format = '.png';
+    const urls = [
+        path + 'px' + format, path + 'nx' + format,
+        path + 'py' + format, path + 'ny' + format,
+        path + 'pz' + format, path + 'nz' + format
+    ];
+
+    const textureCube = new THREE.CubeTextureLoader().load(urls);
 
     Players.push(new Player(0, 100, false));
     Players.push(new Player(0, 100, false));
@@ -364,6 +418,7 @@ function setupScene() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, visibleSize.width / visibleSize.height, 0.1, 100);
 
+    scene.background = textureCube;
 
     camMove = new THREE.Object3D();
     camMove.position.set(0, 0, 0);
@@ -378,7 +433,27 @@ function setupScene() {
     var ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 3);
     scene.add(ambientLight);
 
-    loadFBX("modelos/bot/fbx/bot.fbx", (object) => {
+    const manager = new THREE.LoadingManager();
+
+    THREE.DefaultLoadingManager.onStart = function () {
+        console.log('Se empezó a cargar');
+    }
+
+    THREE.DefaultLoadingManager.onLoad = function () {
+        console.log('Loading Complete!');
+    };
+
+    THREE.DefaultLoadingManager.onProgress = function () {
+        console.log('Progreso');
+
+    };
+
+    THREE.DefaultLoadingManager.onError = function () {
+        console.log('ERROR');
+    };
+
+
+    loadFBX(manager, "modelos/bot/fbx/bot.fbx", (object) => {
         cube = object;
         cube.position.x = 5;
         cube.position.y = 0.5;
@@ -388,7 +463,7 @@ function setupScene() {
         scene.add(cube);
     });
 
-    loadFBX("modelos/bot/fbx2/bot.fbx", (object) => {
+    loadFBX(manager, "modelos/bot/fbx2/bot.fbx", (object) => {
         cube2 = object;
         cube2.position.x = -5;
         cube2.position.y = 0.5;
@@ -398,7 +473,7 @@ function setupScene() {
         scene.add(cube2);
     });
 
-    loadFBX("modelos/stage1/objetos1/llanta/llanta.fbx", (object) => {
+    loadFBX(manager, "modelos/stage1/objetos1/llanta/llanta.fbx", (object) => {
         testobj = object;
         testobj.position.set(0, 0, 0);
         testobj.scale.set(0.6, 0.6, 0.6);
@@ -407,14 +482,14 @@ function setupScene() {
         scene.add(testobj);
     });
 
-    loadFBX("modelos/stage1/fbx/stage1N.fbx", (object) => {
+    loadFBX(manager, "modelos/stage1/fbx/stage1N.fbx", (object) => {
         object.rotateY(THREE.Math.degToRad(180));
         object.castShadow = true;
         object.receiveShadow = true;
         scene.add(object);
     });
 
-    loadFBX("modelos/king/fbx/king.fbx", (object) => {
+    loadFBX(manager, "modelos/king/fbx/king.fbx", (object) => {
         object.rotateY(THREE.Math.degToRad(180));
         object.position.z = 13;
         object.scale.set(0.5, 0.5, 0.5);
@@ -424,7 +499,7 @@ function setupScene() {
         scene.add(object);
     });
     //////RECOGIBLES
-    loadFBX("modelos/stage1/objetos1/basura/basura.fbx", (object) => {
+    loadFBX(manager, "modelos/stage1/objetos1/basura/basura.fbx", (object) => {
         pick2 = object;
         pick2.position.set(7, 0, 0);
         pick2.scale.set(0.01, 0.01, 0.01);
@@ -432,14 +507,14 @@ function setupScene() {
         pick2.receiveShadow = true;
         scene.add(pick2);
     });
-    loadFBX("modelos/stage1/objetos1/botella/coca.fbx", (object) => {
+    loadFBX(manager, "modelos/stage1/objetos1/botella/coca.fbx", (object) => {
         pick3 = object;
         pick3.position.set(3, 0, 0);
         pick3.castShadow = true;
         pick3.receiveShadow = true;
         scene.add(pick3);
     });
-    loadFBX("modelos/stage1/objetos1/hotDog/fbxHotDog.fbx", (object) => {
+    loadFBX(manager, "modelos/stage1/objetos1/hotDog/fbxHotDog.fbx", (object) => {
         pick4 = object;
         pick4.position.set(-3, 0, 0);
         pick4.scale.set(0.3, 0.3, 0.3);
@@ -447,7 +522,7 @@ function setupScene() {
         pick4.receiveShadow = true;
         scene.add(pick4);
     });
-    loadFBX("modelos/stage1/objetos1/lata/Perrybox.fbx", (object) => {
+    loadFBX(manager, "modelos/stage1/objetos1/lata/Perrybox.fbx", (object) => {
         pick5 = object;
         pick5.position.set(-7, 0, 0);
         pick5.scale.set(0.05, 0.05, 0.05);
