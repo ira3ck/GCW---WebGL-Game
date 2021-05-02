@@ -395,7 +395,7 @@ background-color: #eb9846;
 }
 #pauseMenu{
   opacity: 50%;
-  background-color: rgb(128, 128, 128);
+  background-color: rgb(128, 128, 128) !important;
 }
 
 .pauseBTN{
