@@ -17,67 +17,8 @@
     <link rel="shortcut icon" href="img/icono.png" />
     <title>Rey Pide</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        body {
-            margin: 0;
-        }
+    <link rel="stylesheet" href="css/HUD.css">
 
-        #info {
-            position: absolute;
-            top: 10px;
-            width: 100%;
-            text-align: center;
-            z-index: 100;
-            display: block;
-            color: aliceblue;
-        }
-
-        .text {
-            display: inline-block;
-        }
-
-        .p1 {
-            position: absolute;
-            left: 0;
-            text-align: left;
-            z-index: 100;
-            display: block;
-            color: black;
-            padding: 10px;
-            width: 30%;
-            padding-right: 30px;
-            border-bottom-right-radius: 50px;
-            background-color: aliceblue;
-            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-        }
-
-        .p2 {
-            position: absolute;
-            right: 0;
-            text-align: right;
-            z-index: 100;
-            display: block;
-            color: black;
-            padding: 10px;
-            width: 30%;
-            padding-left: 30px;
-            border-bottom-left-radius: 50px;
-            background-color: aliceblue;
-            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-        }
-
-        .playerName {
-            font-size: x-large;
-        }
-
-        .bateria{
-            width: 100%;
-        }
-        .bateriaValue{
-            background-color: darkgreen;
-            text-align: center;
-        }
-    </style>
 </head>
 
 <body class="overflow-hidden">
@@ -101,7 +42,6 @@
                 </div>
                 <div class="row"></div>
             </div>
-
         </div>
     </div>
     <div class="p1">
@@ -113,12 +53,20 @@
         </div>
     </div>
 
+    <div id="info">
+        <div class="text">
+            Tiempo
+            <div class="tiempo"></div>
+        </div>
+    </div>
+
     <div class="p2">
         <div class="playerName px-3 py-1">Jugador 2</div>
         <div class="datos">
             <div class="bateria" style="height: 50px; padding-left: 30px;">
                 <div style="background-color: aliceblue;" id="cojin"></div>
-                <div class="bateriaValue overflow-hidden" id="lifeP2" style="width: 100%; position: absolute; right: 10px; margin-left: 30px;">BATERÍA</div>
+                <div class="bateriaValue overflow-hidden" id="lifeP2"
+                    style="width: 100%; position: absolute; right: 10px; margin-left: 30px;">BATERÍA</div>
             </div>
         </div>
     </div>

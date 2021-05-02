@@ -31,16 +31,15 @@ var deltaTime;
 var keys = {};
 var cube, cube2, testobj, pick2, pick3, pick4, pick5;
 var camMove;
-var facing1Prev, facing2Prev;
-var posT;
-var xAxis, zAxis;
-var PickArray = []
+var facing1Prev;
 var P1WO = false;
 
-var PuntajeJ1 = 0;
+var PickArray = [];
+
 var Players = [];
-var angle;
 var meta;
+
+var reloj = 10;
 
 
 $(document).ready(function () {
@@ -144,13 +143,13 @@ function render() {
     ///////////////////////
     ////RECOGER OBJETOS
 
-    for(var i=0;i<5;i++){
+    for (var i = 0; i < 5; i++) {
         if (PickArray[i].Recogido == true && PickArray[i].Entregado == false) {
             PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
             PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
         }
         if (PickArray[i].Entregado == false) {
-    
+
             if (PickArray[i].Objeto.position.distanceTo(meta) < 3.0) {
                 //PickArray[0].Objeto.remove();
                 PickArray[i].Objeto.position.y = -5;
@@ -158,20 +157,16 @@ function render() {
                     Players[0].Puntaje += 1;
                 else
                     Players[1].Puntaje += 1
-    
+
                 PickArray[i].Entregado = true;
                 //PickArray[0].Objeto.remove();
             }
-    
+
         }
     }
 
-
-    for(var i=0;i<5;i++){
-
-    }
     if (keys["E"]) {
-        for(var i=0;i<5;i++){
+        for (var i = 0; i < 5; i++) {
             var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube.position.z) ** 2));
             if (distance < 1.6 && PickArray[i].Recogido == false) {
                 PickArray[i].Seguir = cube;
@@ -181,9 +176,9 @@ function render() {
         }
     }
     else if (keys["Q"]) {
-        for(var i=0;i<5;i++){
+        for (var i = 0; i < 5; i++) {
             if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
-               
+
                 PickArray[i].Recogido = false
                 P1WO = false;
             }
@@ -191,7 +186,7 @@ function render() {
     }
 
     if (keys["O"]) {
-        for(var i=0;i<5;i++){
+        for (var i = 0; i < 5; i++) {
             var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube2.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube2.position.z) ** 2));
             if (distance < 1.6 && PickArray[i].Recogido == false) {
                 PickArray[i].Seguir = cube2;
@@ -201,7 +196,7 @@ function render() {
         }
     }
     else if (keys["U"]) {
-        for(var i=0;i<5;i++){
+        for (var i = 0; i < 5; i++) {
             if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
                 PickArray[i].Seguir = PickArray[i].Objeto;
                 PickArray[i].Recogido = false
@@ -222,6 +217,7 @@ function render() {
 
 
     if (Players[0].Bateria > 0 && Players[0].Descargado == false) {
+
         if (keys["A"]) {
             cube.rotation.y = (90 * Math.PI) / 180;
             Players[0].Bateria -= .05;
@@ -252,6 +248,7 @@ function render() {
             forward = 5;
             moveF1 = true;
         }
+
         if (Players[0].Turbo) {
             yaw = yaw * 2;
             forward = forward * 2;
@@ -261,19 +258,18 @@ function render() {
     }
     var yaw2 = 0;
     var forward2 = 0;
-    var moveF2 = false;
-    var moveS2 = false;
     if (Players[1].Bateria > 0 && Players[1].Descargado == false) {
+
         if (keys["J"]) {
             cube2.rotation.y = (90 * Math.PI) / 180;
             Players[1].Bateria -= 0.05;
             yaw2 = 5;
-            moveS2 = true;
+            moveS1 = true;
         } else if (keys["L"]) {
             cube2.rotation.y = (270 * Math.PI) / 180;
             Players[1].Bateria -= 0.05;
             yaw2 = -5;
-            moveS2 = true;
+            moveS1 = true;
         }
         if (keys["I"]) {
             cube2.rotation.y = (0 * Math.PI) / 180;
@@ -298,21 +294,20 @@ function render() {
         if (Players[1].Turbo) {
             yaw2 = yaw2 * 2;
             forward2 = forward2 * 2;
-            Players[1].Bateria -= .05;
+            Players[1].Bateria -= 0.05;
         }
     }
 
-    angle = cube.position.angleTo(facing1Prev);
-    var orientation = cube.position.x * facing1Prev.z - cube.position.z * facing1Prev.x;
-    if (orientation > 0) angle = 2 * Math.PI - angle;
-    cube.position.z += -forward * deltaTime;
-    if (moveS1)
-        cube.position.x += yaw * deltaTime;
+    //Rotación de los objetos
+    for (var i = 0; i < PickArray.length; i++) {
+        PickArray[i].Objeto.rotateY(THREE.Math.degToRad(15) * deltaTime);
+    }
 
-    if (moveF2)
-        cube2.position.z += -forward2 * deltaTime;
-    if (moveS2)
-        cube2.position.x += yaw2 * deltaTime;
+    cube.position.x += yaw * deltaTime;
+    cube.position.z += -forward * deltaTime;
+
+    cube2.position.z += -forward2 * deltaTime;
+    cube2.position.x += yaw2 * deltaTime;
 
     camMove.position.x = (cube.position.x + cube2.position.x) / 20;
     camMove.position.z = (cube.position.z + cube2.position.z) / 20;
@@ -324,6 +319,9 @@ function render() {
     renderer.render(scene, camera);
 
     facing1Prev.copy(cube.position);
+
+    elTiempo(deltaTime);
+    
 }
 
 function loadFBX(path, onLoadCallback) {
@@ -346,13 +344,17 @@ function loadFBX(path, onLoadCallback) {
     });
 }
 
+function elTiempo(deltatime){
+    reloj -= 1 * deltatime;
+    if (Math.floor(reloj) < 0)
+        reloj = 0;
+
+    $('.tiempo').text(Math.floor(reloj));
+}
+
 
 function setupScene() {
 
-    //////////////////////////////////////////////////
-    //////////////////////////////////////////////////
-
-    /////////////////////////////////////////////
     meta = new THREE.Vector3();
 
     Players.push(new Player(0, 100, false));
@@ -361,8 +363,7 @@ function setupScene() {
     clock = new THREE.Clock();
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, visibleSize.width / visibleSize.height, 0.1, 100);
-    //camera.position.z = -10;
-    //camera.position.y = 10;
+
 
     camMove = new THREE.Object3D();
     camMove.position.set(0, 0, 0);
@@ -400,7 +401,7 @@ function setupScene() {
     loadFBX("modelos/stage1/objetos1/llanta/llanta.fbx", (object) => {
         testobj = object;
         testobj.position.set(0, 0, 0);
-        testobj.scale.set(.6,.6,.6);
+        testobj.scale.set(0.6, 0.6, 0.6);
         testobj.castShadow = true;
         testobj.receiveShadow = true;
         scene.add(testobj);
@@ -426,7 +427,7 @@ function setupScene() {
     loadFBX("modelos/stage1/objetos1/basura/basura.fbx", (object) => {
         pick2 = object;
         pick2.position.set(7, 0, 0);
-        pick2.scale.set(.01,.01,.01);
+        pick2.scale.set(0.01, 0.01, 0.01);
         pick2.castShadow = true;
         pick2.receiveShadow = true;
         scene.add(pick2);
@@ -441,7 +442,7 @@ function setupScene() {
     loadFBX("modelos/stage1/objetos1/hotDog/fbxHotDog.fbx", (object) => {
         pick4 = object;
         pick4.position.set(-3, 0, 0);
-        pick4.scale.set(.3,.3,.3);
+        pick4.scale.set(0.3, 0.3, 0.3);
         pick4.castShadow = true;
         pick4.receiveShadow = true;
         scene.add(pick4);
@@ -449,7 +450,7 @@ function setupScene() {
     loadFBX("modelos/stage1/objetos1/lata/Perrybox.fbx", (object) => {
         pick5 = object;
         pick5.position.set(-7, 0, 0);
-        pick5.scale.set(.05,.05,.05);
+        pick5.scale.set(0.05, 0.05, 0.05);
         pick5.castShadow = true;
         pick5.receiveShadow = true;
         scene.add(pick5);
@@ -467,8 +468,6 @@ function setupScene() {
     light.shadow.camera.far = 500; // default
 
 
-
-
     //Pickables.push(testobj);
     PickArray.push(new Pickable(testobj, false, testobj, false));
     PickArray.push(new Pickable(pick2, false, pick2, false));
@@ -476,13 +475,7 @@ function setupScene() {
     PickArray.push(new Pickable(pick4, false, pick4, false));
     PickArray.push(new Pickable(pick5, false, pick5, false));
 
-    //scene.add(PickArray);
-    //var lol = new Pickable()
-    //posT.copy(cube.position);
-    xAxis = new THREE.Vector3(1, 0, 0);
-    zAxis = new THREE.Vector3(0, 0, 1);
     facing1Prev = new THREE.Vector3(0, 0, 1);
-    facing2Prev = new THREE.Vector3(0, 0, 1);
 
     $("#scene-section").append(renderer.domElement);
 }

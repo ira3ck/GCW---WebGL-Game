@@ -294,6 +294,10 @@ function render() {
         }
     }
 
+    for(var i = 0; i<PickArray.length; i++){
+        PickArray[i].Objeto.rotateY(THREE.Math.degToRad(15) * deltaTime);
+    }
+
     angle = cube.position.angleTo(facing1Prev);
     var orientation = cube.position.x * facing1Prev.z - cube.position.z * facing1Prev.x;
     if (orientation > 0) angle = 2 * Math.PI - angle;
