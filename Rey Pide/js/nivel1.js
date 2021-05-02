@@ -42,7 +42,7 @@ var objects = [];
 var clock;
 var deltaTime;
 var keys = {};
-var cube, cube2, testobj, pick2, pick3, pick4, pick5;
+var cube, cube2, testobj, pick2, pick3, pick4, pick5,fuenteBateriaO;
 var camMove;
 var facing1Prev;
 var angle;
@@ -57,6 +57,14 @@ var countDown = 10;
 
 var puntuacion = 400, puntuacion2 = 300;
 
+let material = [];
+let materialMareo = [];
+let particles ;
+let particlesMareo ;
+let particlesMareo2 ;
+let count =0;
+let countMareo =0;
+
 
 $(document).ready(function () {
 
@@ -69,6 +77,115 @@ $(document).ready(function () {
     setupScene();
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('keyup', onKeyUp);
+
+    //////particulas electricas///////////
+    const vertices = [];
+
+    const numParticles = 1 * 6;
+
+    const positions = new Float32Array( numParticles * 3 );
+    const scales = new Float32Array( numParticles );
+
+    let iyu = 0, jyu = 0;
+
+     for ( let ix = 0; ix < 6; ix ++ ) {
+
+        for ( let iy = 0; iy < 1; iy ++ ) {
+
+            positions[ iyu ] =0; // x
+            positions[ iyu + 1 ] = 0; // y
+            positions[ iyu + 2 ] = 0; // z
+
+            scales[ jyu ] = 1;
+
+            iyu += 3;
+            jyu ++;
+
+        }
+
+    }
+
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+    geometry.setAttribute( 'scale', new THREE.BufferAttribute( scales, 1 ) );
+
+    const sprite = new THREE.TextureLoader().load( 'img/particula.png' );
+
+    
+    material = new THREE.PointsMaterial( { size: 1, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: true } );
+    material.color.setHSL( 1.0, 0.3, 0.7 );
+
+    particles = new THREE.Points( geometry, material );
+    scene.add( particles );
+
+    //////////////////////////////////////////////////////
+    /////////////////particula mareo////////////////////
+    const verticesMareo = [];
+
+    const numParticlesMareo = 1 * 3;
+
+    const positionsMareo = new Float32Array( numParticlesMareo * 3 );
+
+    let iMareo = 0, jMareo = 0;
+
+     for ( let ix = 0; ix < 3; ix ++ ) {
+
+        for ( let iy = 0; iy < 1; iy ++ ) {
+
+            positionsMareo[ iMareo ] = 0; // x
+            positionsMareo[ iMareo + 1 ] = 0; // y
+            positionsMareo[ iMareo + 2 ] = 0; // z
+
+            iMareo += 3;
+            jMareo ++;
+
+        }
+
+    }
+
+        const positionsMareo2 = new Float32Array( numParticlesMareo * 3 );
+
+   iMareo = 0, jMareo = 0;
+
+     for ( let ix = 0; ix < 3; ix ++ ) {
+
+        for ( let iy = 0; iy < 1; iy ++ ) {
+
+            positionsMareo2[ iMareo ] = 0; // x
+            positionsMareo2[ iMareo + 1 ] = 0; // y
+            positionsMareo2[ iMareo + 2 ] = 0; // z
+
+            iMareo += 3;
+            jMareo ++;
+
+        }
+
+    }
+
+
+    const geometryMareo = new THREE.BufferGeometry();
+    geometryMareo.setAttribute( 'position', new THREE.BufferAttribute( positionsMareo, 3 ) );
+
+    const geometryMareo2 = new THREE.BufferGeometry();
+    geometryMareo2.setAttribute( 'position', new THREE.BufferAttribute( positionsMareo2, 3 ) );
+
+    const spriteMareo = new THREE.TextureLoader().load( 'img/Mareo.png' );
+
+    
+    materialMareo = new THREE.PointsMaterial( { size: 1, sizeAttenuation: true, map: spriteMareo, alphaTest: 0.5, transparent: true } );
+    materialMareo.color.setHSL( 1.0, 0.3, 0.7 );
+
+    particlesMareo = new THREE.Points( geometryMareo, materialMareo );
+    particlesMareo.geometry.scale(.2,.2,.2)
+    particlesMareo.geometry.setDrawRange(0,0 );
+
+    particlesMareo2 = new THREE.Points( geometryMareo2, materialMareo );
+    particlesMareo2.geometry.scale(.2,.2,.2)
+    particlesMareo2.geometry.setDrawRange(0,0 );
+    scene.add( particlesMareo );
+    scene.add( particlesMareo2 );
+    ////////////////////////////////////////////
 
     render();
 });
@@ -125,6 +242,77 @@ function render() {
         var moveS1 = false;
         var yaw = 0;
         var forward = 0;
+
+        ///////////particulas Electricas/////////////
+    const positions = particles.geometry.attributes.position.array;
+    const scales = particles.geometry.attributes.scale.array;
+
+    
+
+    let ipd = 0, jpd = 0;
+
+                for ( let ix = 0; ix < 6; ix ++ ) {
+
+                    for ( let iy = 0; iy < 1; iy ++ ) {
+
+                       positions[ ipd + 1 ] = ( Math.sin( ( ix + count ) * 0.9 ) + 2);
+                       positions[ ipd + 0 ] =  fuenteBateriaO.position.x + ( Math.sin( ( ix + count ) * 0.3 ) * 4);
+                       positions[ ipd + 2 ] =  fuenteBateriaO.position.z + ( Math.sin( ( ix + count ) * 0.3 ) * .2);
+                       
+
+                        ipd += 3;
+                        jpd ++;
+
+                    }
+
+                }
+
+                particles.geometry.attributes.position.needsUpdate = true;
+                
+
+                count += 0.1;
+    
+
+
+
+    ///////////////////////
+    ///////////particulas Mareo/////////////
+    const positionsMareo = particlesMareo.geometry.attributes.position.array;
+    const positionsMareo2 = particlesMareo2.geometry.attributes.position.array;
+    
+    particlesMareo.geometry.rotateY(THREE.Math.degToRad(.2));
+    particlesMareo2.geometry.rotateY(THREE.Math.degToRad(.2));
+     
+    
+
+    let ipdMareo = 0, jpdMareo = 0;
+
+                for ( let ix = 0; ix < 3; ix ++ ) {
+
+
+                    positionsMareo[ ipdMareo + 1 ] = ( Math.sin( ( ix + countMareo ) * 0.01 ) + 3) ;
+                    positionsMareo[ ipdMareo + 0 ] =  cube.position.x + ( Math.sin( ( ix + countMareo ) * 1 ) * 1);
+                    positionsMareo[ ipdMareo + 2 ] =  cube.position.z + ( Math.sin( ( ix + countMareo ) * 2 ) * 1);
+
+                    positionsMareo2[ ipdMareo + 1 ] = ( Math.sin( ( ix + countMareo ) * 0.01 ) + 3) ;
+                    positionsMareo2[ ipdMareo + 0 ] =  cube2.position.x + ( Math.sin( ( ix + countMareo ) * 1 ) * 1);
+                    positionsMareo2[ ipdMareo + 2 ] =  cube2.position.z + ( Math.sin( ( ix + countMareo ) * 2 ) * 1);
+
+
+                    ipdMareo += 3;
+                    jpdMareo ++;
+
+                }
+
+                particlesMareo.geometry.attributes.position.needsUpdate = true;
+                particlesMareo2.geometry.attributes.position.needsUpdate = true;
+                
+
+                countMareo += 0.03;
+    
+
+
+
         ////CARGA
         if (Players[0].Bateria < 100) {
             if ((cube.position.z > -10 && cube.position.z < -5) && (cube.position.x > -5 && cube.position.x < 5)) {
@@ -139,8 +327,8 @@ function render() {
         }
         ////DESCARGADOS
         if (Players[0].Bateria < 0) {
-            cube.position.z = -8;
-            cube.position.x = 0;
+            cube.position.z = fuenteBateriaO.position.z;
+            cube.position.x = fuenteBateriaO.position.x - 1.4;
             Players[0].Descargado = true;
             Players[0].Turbo = false;
         }
@@ -148,8 +336,8 @@ function render() {
             Players[0].Descargado = false;
 
         if (Players[1].Bateria < 0) {
-            cube2.position.z = -8;
-            cube2.position.x = 0;
+            cube2.position.z = fuenteBateriaO.position.z;
+            cube2.position.x = fuenteBateriaO.position.x + 1.4;
             Players[1].Descargado = true;
             Players[1].Turbo = false;
         }
@@ -317,6 +505,7 @@ function render() {
             if (distance < 2 && Players[1].Aturdido == false) {
                 Players[0].Bateria -= 10;
                 Players[1].Aturdido = true;
+                particlesMareo2.geometry.setDrawRange(0,Infinity );
                 for (var i = 0; i < 5; i++) {
                     if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube2) {
                         PickArray[i].Seguir = PickArray[i].Objeto;
@@ -334,6 +523,7 @@ function render() {
             if (distance < 2 && Players[0].Aturdido == false) {
                 Players[1].Bateria -= 10;
                 Players[0].Aturdido = true;
+                particlesMareo.geometry.setDrawRange(0,Infinity );
                 for (var i = 0; i < 5; i++) {
                     if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
                         PickArray[i].Seguir = PickArray[i].Objeto;
@@ -349,6 +539,8 @@ function render() {
             Players[i].StunnedTime += .2;
             if (Players[i].Aturdido == true && Players[i].StunnedTime > 9) {
                 Players[i].Aturdido = false;
+                particlesMareo.geometry.setDrawRange(0,0);
+                particlesMareo2.geometry.setDrawRange(0,0);
                 Players[i].StunnedTime = 0;
             }
         }
@@ -669,6 +861,15 @@ function render() {
             pick5.receiveShadow = true;
             scene.add(pick5);
         });
+        loadFBX(manager,"modelos/FuenteBateriaFBX/FuenteBateria.fbx", (object) => {
+        fuenteBateriaO = object;
+        fuenteBateriaO.position.set(0, .2, -9);
+        fuenteBateriaO.scale.set(1.6, 1.6, 1.6);
+        fuenteBateriaO.rotateY(THREE.Math.degToRad(90));
+        fuenteBateriaO.castShadow = true;
+        fuenteBateriaO.receiveShadow = true;
+        scene.add(fuenteBateriaO);
+     });
 
         const light = new THREE.PointLight(0xffffff, 1, 100);
         light.position.set(3, 15, 20);
