@@ -3,11 +3,14 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js';
 
 class Pickable {
-    constructor(objeto, reco, seguirA, entregado) {
+    constructor(objeto, reco, seguirA, entregado, activado) {
         this.Objeto = objeto;
         this.Recogido = reco;
         this.Seguir = seguirA;
         this.Entregado = entregado;
+        this.Activado = activado
+        this.Origen = 0
+        this.movido = false
     }
 
 }
@@ -18,6 +21,15 @@ class Player {
         this.Puntaje = Score;
         this.Turbo = Nitro;
         this.Aturdido = false;
+        this.StunnedTime = 0;
+    }
+}
+
+class RndPosition{
+    constructor(equis, zeta){
+        this.Px = equis
+        this.Pz = zeta
+        this.tomada = false
     }
 }
 
@@ -35,6 +47,7 @@ var facing1Prev, facing2Prev;
 var posT;
 var xAxis, zAxis;
 var PickArray = []
+var Posiciones = []
 var P1WO = false;
 var PuntajeJ1 = 0;
 var Players = [];
@@ -89,6 +102,14 @@ function render() {
     PickArray[4].Objeto = pick5;
     requestAnimationFrame(render);
 
+    for(var i =0; i < 5; i++){
+        PickArray[i].Objeto.visible = false;
+        if(PickArray[i].movido == false){
+            PickArray[i].Objeto.position.x = Posiciones[PickArray[i].Origen].Px
+            PickArray[i].Objeto.position.z = Posiciones[PickArray[i].Origen].Pz
+        }
+    }
+
     $("#x").text(Players[0].Bateria);
 
     $("#lifeP1").css('width', Players[0].Bateria + '%')
@@ -142,33 +163,114 @@ function render() {
     ///////////////////////
     ////RECOGER OBJETOS
     for(var i=0;i<5;i++){
-        if (PickArray[i].Recogido == true && PickArray[i].Entregado == false) {
-            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
-            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
-        }
-        if (PickArray[i].Entregado == false) {
-    
-            if (PickArray[i].Objeto.position.distanceTo(meta) < 3.0) {
-                //PickArray[0].Objeto.remove();
-                PickArray[i].Objeto.position.y = -5;
-                if (PickArray[i].Seguir == cube)
-                    Players[0].Puntaje += 1;
-                else
-                    Players[1].Puntaje += 1
-    
-                PickArray[i].Entregado = true;
-                //PickArray[0].Objeto.remove();
+        if(PickArray[i].Activado){
+            PickArray[i].Objeto.visible = true
+            if (PickArray[i].Recogido == true && PickArray[i].Entregado == false) {
+                if(PickArray[i].Seguir==cube){ 
+                    if(cube.rotation.y == (90 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 2;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
+                    }
+                    if(cube.rotation.y == (270 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 2;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
+                    }
+                    if(cube.rotation.y == (0 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 2;
+                    }
+                    if(cube.rotation.y == (180 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 2;
+                    }
+
+                    if(cube.rotation.y == (45 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 1;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 1;
+                    }
+                    if(cube.rotation.y == (315 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 1;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 1;
+                    }
+                    if(cube.rotation.y == (135 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 1;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 1;
+                    }
+                    if(cube.rotation.y == (225 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 1;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 1;
+                    }
+                }
+                if(PickArray[i].Seguir==cube2){ 
+                    if(cube2.rotation.y == (90 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 2;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
+                    }
+                    if(cube2.rotation.y == (270 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 2;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
+                    }
+                    if(cube2.rotation.y == (0 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 2;
+                    }
+                    if(cube2.rotation.y == (180 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 2;
+                    }
+
+                    if(cube2.rotation.y == (45 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 1;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 1;
+                    }
+                    if(cube2.rotation.y == (315 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 1;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 1;
+                    }
+                    if(cube2.rotation.y == (135 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 1;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 1;
+                    }
+                    if(cube2.rotation.y == (225 * Math.PI) / 180){
+                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 1;
+                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 1;
+                    }
+                }
             }
-    
+            if (PickArray[i].Entregado == false) {
+        
+                if (PickArray[i].Objeto.position.distanceTo(meta) < 3.0) {
+                    //PickArray[0].Objeto.remove();
+                    PickArray[i].Objeto.position.y = -5;
+                    if (PickArray[i].Seguir == cube)
+                        Players[0].Puntaje += 1;
+                    else
+                        Players[1].Puntaje += 1
+        
+                    if(i<4)
+                        PickArray[i + 1].Activado = true;
+                    else
+                        PickArray[4].Activado = true;
+                   
+                    PickArray[i].Entregado = true;
+                    PickArray[i].Activado = false;
+
+                    //PickArray[0].Objeto.remove();
+                }
+        
+            }
         }
     }
 
     if (keys["E"]) {
         for(var i=0;i<5;i++){
+            
             var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube.position.z) ** 2));
             if (distance < 1.6 && PickArray[i].Recogido == false) {
                 PickArray[i].Seguir = cube;
                 PickArray[i].Recogido = true;
+                PickArray[i].movido = true;
+
                 P1WO = true;
             }
         }
@@ -189,13 +291,15 @@ function render() {
             if (distance < 1.6 && PickArray[i].Recogido == false) {
                 PickArray[i].Seguir = cube2;
                 PickArray[i].Recogido = true;
+                PickArray[i].movido = true;
+
                 P1WO = true;
             }
         }
     }
     else if (keys["U"]) {
         for(var i=0;i<5;i++){
-            if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
+            if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube2) {
                 PickArray[i].Seguir = PickArray[i].Objeto;
                 PickArray[i].Recogido = false
                 P1WO = false;
@@ -204,17 +308,62 @@ function render() {
     }
     /////////////////
     ////TURBO
+
     if (keys["R"] && Players[0].Descargado == false) {
         Players[0].Turbo = !Players[0].Turbo;
     }
+
     if (keys["P"] && Players[1].Descargado == false) {
         Players[1].Turbo = !Players[1].Turbo;
     }
+
+    /////////////////
+    ////GOLPE
+
+    if (keys["F"]) {
+        
+        var distance = Math.sqrt(((cube.position.x - cube2.position.x) ** 2) + ((cube.position.z - cube2.position.z) ** 2));
+        if (distance < 2 && Players[1].Aturdido == false){
+            Players[0].Bateria -= 10;
+            Players[1].Aturdido = true;
+            for(var i=0;i<5;i++){
+                if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube2) {
+                    PickArray[i].Seguir = PickArray[i].Objeto;
+                    PickArray[i].Recogido = false
+                    P1WO = false;
+                }
+            }
+            
+        }
+
+    }
+
+    if (keys["H"]) {
+        var distance = Math.sqrt(((cube.position.x - cube2.position.x) ** 2) + ((cube.position.z - cube2.position.z) ** 2));
+        if (distance < 2 && Players[0].Aturdido == false){
+            Players[1].Bateria -= 10;
+            Players[0].Aturdido = true;
+            for(var i=0;i<5;i++){
+                if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
+                    PickArray[i].Seguir = PickArray[i].Objeto;
+                    PickArray[i].Recogido = false
+                    P1WO = false;
+                }
+            }
+            
+        }
+    }
+
+    for(var i = 0; i < 2; i++){
+        Players[i].StunnedTime += .2;
+        if(Players[i].Aturdido == true && Players[i].StunnedTime > 15){
+            Players[i].Aturdido = false;
+            Players[i].StunnedTime = 0;
+        }
+    }
     /////////////////
 
-
-
-    if (Players[0].Bateria > 0 && Players[0].Descargado == false) {
+    if (Players[0].Bateria > 0 && Players[0].Descargado == false && Players[0].Aturdido == false) {
         if (keys["A"]) {
             cube.rotation.y = (90 * Math.PI) / 180;
             Players[0].Bateria -= .05;
@@ -256,7 +405,7 @@ function render() {
     var forward2 = 0;
     var moveF2 = false;
     var moveS2 = false;
-    if (Players[1].Bateria > 0 && Players[1].Descargado == false) {
+    if (Players[1].Bateria > 0 && Players[1].Descargado == false && Players[1].Aturdido == false) {
         if (keys["J"]) {
             cube2.rotation.y = (90 * Math.PI) / 180;
             Players[1].Bateria -= 0.05;
@@ -295,8 +444,9 @@ function render() {
         }
     }
 
-    for(var i = 0; i<PickArray.length; i++){
-        PickArray[i].Objeto.rotateY(THREE.Math.degToRad(15) * deltaTime);
+    for(var i = 0; i< PickArray.length; i++){
+        if(PickArray[i].Recogido == false)
+            PickArray[i].Objeto.rotateY(THREE.Math.degToRad(15) * deltaTime);
     }
 
     angle = cube.position.angleTo(facing1Prev);
@@ -465,15 +615,29 @@ function setupScene() {
     light.shadow.camera.near = 0.5; // default
     light.shadow.camera.far = 500; // default
 
-
-
+    Posiciones.push(new RndPosition(0, 0))
+    Posiciones.push(new RndPosition(7, 0))
+    Posiciones.push(new RndPosition(4, 0))
+    Posiciones.push(new RndPosition(-4, 0))
+    Posiciones.push(new RndPosition(-7, 0))
 
     //Pickables.push(testobj);
-    PickArray.push(new Pickable(testobj, false, testobj, false));
-    PickArray.push(new Pickable(pick2, false, pick2, false));
-    PickArray.push(new Pickable(pick3, false, pick3, false));
-    PickArray.push(new Pickable(pick4, false, pick4, false));
-    PickArray.push(new Pickable(pick5, false, pick5, false));
+    PickArray.push(new Pickable(testobj, false, testobj, false, true));
+    PickArray.push(new Pickable(pick2, false, pick2, false, false));
+    PickArray.push(new Pickable(pick3, false, pick3, false, false));
+    PickArray.push(new Pickable(pick4, false, pick4, false, false));
+    PickArray.push(new Pickable(pick5, false, pick5, false, false));
+
+    for(var i = 0; i < 5; i++){
+        
+        var k = 0
+        do{
+            k = Math.floor(Math.random() * Posiciones.length);    
+        }while(Posiciones[k].tomada == true)
+        PickArray[i].Origen = k
+        Posiciones[k].tomada = true
+       
+    }
     //scene.add(PickArray);
     //var lol = new Pickable()
     //posT.copy(cube.position);
