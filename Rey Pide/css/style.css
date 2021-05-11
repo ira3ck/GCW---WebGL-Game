@@ -509,3 +509,16 @@ td{
   transition: all 600ms cubic-bezier(0.3, 1, 0.2, 1);
    -webkit-transition: all 600ms cubic-bezier(0.3, 1, 0.2, 1);
 }
+
+.cargando {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 10px;
+  color: aliceblue;
+  font-size: xx-large;
+}
+.cargando>span{
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}

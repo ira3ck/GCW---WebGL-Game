@@ -20,21 +20,6 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/HUD.css">
 
-    <style>
-        .cargando {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            padding: 10px;
-            color: aliceblue;
-            font-size: xx-large;
-        }
-        .cargando>span{
-            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-        }
-    </style>
-
 </head>
 
 <body class="overflow-hidden">
@@ -44,7 +29,7 @@
     </script>
 
     <div class="cargando">
-       <span class="mr-2">Cargando...</span><i class="fa fa-spinner fa-spin"></i>
+        <span class="mr-2">Cargando...</span><i class="fa fa-spinner fa-spin"></i>
     </div>
 
     <div class="gameScreen" id="pauseMenu">
@@ -71,7 +56,7 @@
                 <div class="row justify-content-center infoScreen" style="font-size: 8vh;">
                     FIN DEL JUEGO
                 </div>
-                <div class="row justify-content-center infoScreen" style="font-size: 12vh;">
+                <div class="row justify-content-center infoScreen" style="font-size: 12vh;" id="nameWinner">
                     Ganador: Jugador 1
                 </div>
                 <div class="row justify-content-center mt-5">
@@ -109,7 +94,7 @@
                     style="width: calc(100% - 40px); position: absolute; right: 10px; margin-left: 30px;">BATERÍA</div>
             </div>
         </div>
-        <div class="playerName px-3" id="scoreP1">0</div>
+        <div class="playerName px-3" id="scoreP2">0</div>
     </div>
 
     <div class="modal fade" id="puntuacion" tabindex="-1" aria-labelledby="puntuacionLabel" aria-hidden="true">
@@ -122,14 +107,19 @@
                 </div>
                 <div class="modal-body user-select-none">
                     <div class="container">
-                        <div class="row justify-content-center" style="font-size: x-large; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">Puntuación</div>
-                        <div class="row justify-content-center text-center text-break" id="highscore" style="font-size: 3vw; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">5741</div>
+                        <div class="row justify-content-center"
+                            style="font-size: x-large; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+                            Puntuación</div>
+                        <div class="row justify-content-center text-center text-break" id="highscore"
+                            style="font-size: 3vw; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+                            -1</div>
                         <div class="row justify-content-center">
                             <input type="text" class="form-control text-center" id="playerHighScore" value="Jugador 1">
                         </div>
                         <div class="row justify-content-center mb-5">
                             <div class="col-2"></div>
-                            <div class="col pauseBTN text-center justify-content-center" id="submitScore">Subir puntuación</div>
+                            <div class="col pauseBTN text-center justify-content-center" id="submitScore">Subir
+                                puntuación</div>
                             <div class="col-2"></div>
                         </div>
                         <div class="row mt-5">
@@ -147,6 +137,10 @@
     </div>
 
     <div id="scene-section"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-database.js"></script>
+    <script src="js/fireDB.js"></script>
 </body>
 
 </html>

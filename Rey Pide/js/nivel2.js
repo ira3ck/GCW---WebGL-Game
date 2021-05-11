@@ -21,11 +21,13 @@ class Player {
         this.Turbo = Nitro;
         this.Aturdido = false;
         this.StunnedTime = 0;
+        this.xAnt = 0;
+        this.zAnt = 0;
     }
 }
 
-class RndPosition{
-    constructor(equis, zeta){
+class RndPosition {
+    constructor(equis, zeta) {
         this.Px = equis
         this.Pz = zeta
         this.tomada = false
@@ -40,26 +42,34 @@ var objects = [];
 var clock;
 var deltaTime;
 var keys = {};
-var cube, cube2, testobj, pick2, pick3, pick4, pick5,fuenteBateriaO;
+var cube, cube2, testobj, pick2, pick3, pick4, pick5, fuenteBateriaO;
 var camMove;
 var facing1Prev, facing2Prev;
-var posT;
-var xAxis, zAxis;
 var PickArray = []
 var Posiciones = []
-var P1WO = false;
-var PuntajeJ1 = 0;
 var Players = [];
 var angle;
 var meta;
 
+var xAxis, zAxis;
+
+var reloj = 60;
+var countDown = 10;
+
+var puntuacion = 0, puntuacion2 = 0;
+
 let material = [];
 let materialMareo = [];
-let particles ;
-let particlesMareo ;
-let particlesMareo2 ;
-let count =0;
-let countMareo =0;
+let particles;
+let particlesMareo;
+let particlesMareo2;
+let count = 0;
+let countMareo = 0;
+
+var rayCaster;
+
+var puntosOBJ = 0;
+var quitaPuntosOBJ = false;
 
 $(document).ready(function () {
     $('#pauseMenu').hide();
@@ -77,23 +87,23 @@ $(document).ready(function () {
 
     const numParticles = 1 * 6;
 
-    const positions = new Float32Array( numParticles * 3 );
-    const scales = new Float32Array( numParticles );
+    const positions = new Float32Array(numParticles * 3);
+    const scales = new Float32Array(numParticles);
 
     let iyu = 0, jyu = 0;
 
-     for ( let ix = 0; ix < 6; ix ++ ) {
+    for (let ix = 0; ix < 6; ix++) {
 
-        for ( let iy = 0; iy < 1; iy ++ ) {
+        for (let iy = 0; iy < 1; iy++) {
 
-            positions[ iyu ] =0; // x
-            positions[ iyu + 1 ] = 0; // y
-            positions[ iyu + 2 ] = 0; // z
+            positions[iyu] = 0; // x
+            positions[iyu + 1] = 0; // y
+            positions[iyu + 2] = 0; // z
 
-            scales[ jyu ] = 1;
+            scales[jyu] = 1;
 
             iyu += 3;
-            jyu ++;
+            jyu++;
 
         }
 
@@ -101,17 +111,17 @@ $(document).ready(function () {
 
 
     const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-    geometry.setAttribute( 'scale', new THREE.BufferAttribute( scales, 1 ) );
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('scale', new THREE.BufferAttribute(scales, 1));
 
-    const sprite = new THREE.TextureLoader().load( 'img/particula.png' );
+    const sprite = new THREE.TextureLoader().load('img/particula.png');
 
-    
-    material = new THREE.PointsMaterial( { size: 1, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: true } );
-    material.color.setHSL( 1.0, 0.3, 0.7 );
 
-    particles = new THREE.Points( geometry, material );
-    scene.add( particles );
+    material = new THREE.PointsMaterial({ size: 1, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: true });
+    material.color.setHSL(1.0, 0.3, 0.7);
+
+    particles = new THREE.Points(geometry, material);
+    scene.add(particles);
 
     //////////////////////////////////////////////////////
     /////////////////particula mareo////////////////////
@@ -119,39 +129,39 @@ $(document).ready(function () {
 
     const numParticlesMareo = 1 * 3;
 
-    const positionsMareo = new Float32Array( numParticlesMareo * 3 );
+    const positionsMareo = new Float32Array(numParticlesMareo * 3);
 
     let iMareo = 0, jMareo = 0;
 
-     for ( let ix = 0; ix < 3; ix ++ ) {
+    for (let ix = 0; ix < 3; ix++) {
 
-        for ( let iy = 0; iy < 1; iy ++ ) {
+        for (let iy = 0; iy < 1; iy++) {
 
-            positionsMareo[ iMareo ] = 0; // x
-            positionsMareo[ iMareo + 1 ] = 0; // y
-            positionsMareo[ iMareo + 2 ] = 0; // z
+            positionsMareo[iMareo] = 0; // x
+            positionsMareo[iMareo + 1] = 0; // y
+            positionsMareo[iMareo + 2] = 0; // z
 
             iMareo += 3;
-            jMareo ++;
+            jMareo++;
 
         }
 
     }
 
-        const positionsMareo2 = new Float32Array( numParticlesMareo * 3 );
+    const positionsMareo2 = new Float32Array(numParticlesMareo * 3);
 
-   iMareo = 0, jMareo = 0;
+    iMareo = 0, jMareo = 0;
 
-     for ( let ix = 0; ix < 3; ix ++ ) {
+    for (let ix = 0; ix < 3; ix++) {
 
-        for ( let iy = 0; iy < 1; iy ++ ) {
+        for (let iy = 0; iy < 1; iy++) {
 
-            positionsMareo2[ iMareo ] = 0; // x
-            positionsMareo2[ iMareo + 1 ] = 0; // y
-            positionsMareo2[ iMareo + 2 ] = 0; // z
+            positionsMareo2[iMareo] = 0; // x
+            positionsMareo2[iMareo + 1] = 0; // y
+            positionsMareo2[iMareo + 2] = 0; // z
 
             iMareo += 3;
-            jMareo ++;
+            jMareo++;
 
         }
 
@@ -159,26 +169,26 @@ $(document).ready(function () {
 
 
     const geometryMareo = new THREE.BufferGeometry();
-    geometryMareo.setAttribute( 'position', new THREE.BufferAttribute( positionsMareo, 3 ) );
+    geometryMareo.setAttribute('position', new THREE.BufferAttribute(positionsMareo, 3));
 
     const geometryMareo2 = new THREE.BufferGeometry();
-    geometryMareo2.setAttribute( 'position', new THREE.BufferAttribute( positionsMareo2, 3 ) );
+    geometryMareo2.setAttribute('position', new THREE.BufferAttribute(positionsMareo2, 3));
 
-    const spriteMareo = new THREE.TextureLoader().load( 'img/Mareo.png' );
+    const spriteMareo = new THREE.TextureLoader().load('img/Mareo.png');
 
-    
-    materialMareo = new THREE.PointsMaterial( { size: 1, sizeAttenuation: true, map: spriteMareo, alphaTest: 0.5, transparent: true } );
-    materialMareo.color.setHSL( 1.0, 0.3, 0.7 );
 
-    particlesMareo = new THREE.Points( geometryMareo, materialMareo );
-    particlesMareo.geometry.scale(.2,.2,.2)
-    particlesMareo.geometry.setDrawRange(0,0 );
+    materialMareo = new THREE.PointsMaterial({ size: 1, sizeAttenuation: true, map: spriteMareo, alphaTest: 0.5, transparent: true });
+    materialMareo.color.setHSL(1.0, 0.3, 0.7);
 
-    particlesMareo2 = new THREE.Points( geometryMareo2, materialMareo );
-    particlesMareo2.geometry.scale(.2,.2,.2)
-    particlesMareo2.geometry.setDrawRange(0,0 );
-    scene.add( particlesMareo );
-    scene.add( particlesMareo2 );
+    particlesMareo = new THREE.Points(geometryMareo, materialMareo);
+    particlesMareo.geometry.scale(.2, .2, .2)
+    particlesMareo.geometry.setDrawRange(0, 0);
+
+    particlesMareo2 = new THREE.Points(geometryMareo2, materialMareo);
+    particlesMareo2.geometry.scale(.2, .2, .2)
+    particlesMareo2.geometry.setDrawRange(0, 0);
+    scene.add(particlesMareo);
+    scene.add(particlesMareo2);
     ////////////////////////////////////////////
 
     render();
@@ -215,338 +225,358 @@ function render() {
     PickArray[2].Objeto = pick3;
     PickArray[3].Objeto = pick4;
     PickArray[4].Objeto = pick5;
-    
+
     requestAnimationFrame(render);
 
-    for(var i =0; i < 5; i++){
+    for (var i = 0; i < 5; i++) {
         PickArray[i].Objeto.visible = false;
-        if(PickArray[i].movido == false){
+        if (PickArray[i].movido == false) {
             PickArray[i].Objeto.position.x = Posiciones[PickArray[i].Origen].Px
             PickArray[i].Objeto.position.z = Posiciones[PickArray[i].Origen].Pz
         }
     }
 
-
-
-    $("#x").text(Players[0].Bateria);
-
-    $("#lifeP1").css('width', Players[0].Bateria + '%')
-
-    $("#y").text(Players[1].Bateria);
-
-    $("#lifeP2").css('width', 'calc(' + Players[1].Bateria + '% - 40px)')
-
-    $("#z").text("ScoreP1:" + Players[0].Puntaje + " ScoreP2:" + Players[1].Puntaje);
-
     deltaTime = clock.getDelta();
-    var moveF1 = false;
-    var moveS1 = false;
 
-    var yaw = 0;
-    var forward = 0;
-    ///////////particulas Electricas/////////////
-    const positions = particles.geometry.attributes.position.array;
-    const scales = particles.geometry.attributes.scale.array;
 
-    
+    if (contador(deltaTime) && $('#pauseMenu').is(':hidden') && elTiempo(deltaTime)) {
 
-    let ipd = 0, jpd = 0;
+        $('.cargando').hide();
 
-                for ( let ix = 0; ix < 6; ix ++ ) {
 
-                    for ( let iy = 0; iy < 1; iy ++ ) {
+        var moveF1 = false;
+        var moveS1 = false;
 
-                       positions[ ipd + 1 ] = ( Math.sin( ( ix + count ) * 0.9 ) + 2);
-                       positions[ ipd + 0 ] =  fuenteBateriaO.position.x + ( Math.sin( ( ix + count ) * 0.3 ) * 4);
-                       positions[ ipd + 2 ] =  fuenteBateriaO.position.z + ( Math.sin( ( ix + count ) * 0.3 ) * .2);
-                       
+        var yaw = 0;
+        var forward = 0;
+        ///////////particulas Electricas/////////////
+        const positions = particles.geometry.attributes.position.array;
+        const scales = particles.geometry.attributes.scale.array;
 
-                        ipd += 3;
-                        jpd ++;
 
+
+        let ipd = 0, jpd = 0;
+
+        for (let ix = 0; ix < 6; ix++) {
+
+            for (let iy = 0; iy < 1; iy++) {
+
+                positions[ipd + 1] = (Math.sin((ix + count) * 0.9) + 2);
+                positions[ipd + 0] = fuenteBateriaO.position.x + (Math.sin((ix + count) * 0.3) * 4);
+                positions[ipd + 2] = fuenteBateriaO.position.z + (Math.sin((ix + count) * 0.3) * .2);
+
+
+                ipd += 3;
+                jpd++;
+
+            }
+
+        }
+
+        particles.geometry.attributes.position.needsUpdate = true;
+
+        count += 0.1;
+
+        ///////////////////////
+        ///////////particulas Mareo/////////////
+        const positionsMareo = particlesMareo.geometry.attributes.position.array;
+        const positionsMareo2 = particlesMareo2.geometry.attributes.position.array;
+
+        particlesMareo.geometry.rotateY(THREE.Math.degToRad(.2));
+        particlesMareo2.geometry.rotateY(THREE.Math.degToRad(.2));
+
+
+
+        let ipdMareo = 0, jpdMareo = 0;
+
+        for (let ix = 0; ix < 3; ix++) {
+
+
+            positionsMareo[ipdMareo + 1] = (Math.sin((ix + countMareo) * 0.01) + 3);
+            positionsMareo[ipdMareo + 0] = cube.position.x + (Math.sin((ix + countMareo) * 1) * 1);
+            positionsMareo[ipdMareo + 2] = cube.position.z + (Math.sin((ix + countMareo) * 2) * 1);
+
+            positionsMareo2[ipdMareo + 1] = (Math.sin((ix + countMareo) * 0.01) + 3);
+            positionsMareo2[ipdMareo + 0] = cube2.position.x + (Math.sin((ix + countMareo) * 1) * 1);
+            positionsMareo2[ipdMareo + 2] = cube2.position.z + (Math.sin((ix + countMareo) * 2) * 1);
+
+
+            ipdMareo += 3;
+            jpdMareo++;
+
+        }
+
+        particlesMareo.geometry.attributes.position.needsUpdate = true;
+        particlesMareo2.geometry.attributes.position.needsUpdate = true;
+
+
+        countMareo += 0.03;
+
+        ///////////////////////
+        ////CARGA
+
+        if (Players[0].Bateria < 100) {
+            if ((cube.position.z > -10 && cube.position.z < -5) && (cube.position.x > -5 && cube.position.x < 5)) {
+                Players[0].Bateria += 0.1;
+            }
+        }
+
+        if (Players[1].Bateria < 100) {
+            if ((cube2.position.z > -10 && cube2.position.z < -5) && (cube2.position.x > -5 && cube2.position.x < 5)) {
+                Players[1].Bateria += 0.1;
+            }
+        }
+        ////DESCARGADOS
+        if (Players[0].Bateria < 0) {
+            cube.position.z = fuenteBateriaO.position.z;
+            cube.position.x = fuenteBateriaO.position.x - 1.4;
+            Players[0].Descargado = true;
+            Players[0].Turbo = false;
+
+            if (cube.position.distanceTo(cube2.position) < 1.5)
+                cube2.position.x += 1.4;
+            puntuacion -= 50;
+        }
+        if (Players[0].Bateria > 30)
+            Players[0].Descargado = false;
+
+        if (Players[1].Bateria < 0) {
+            cube2.position.z = fuenteBateriaO.position.z;
+            cube2.position.x = fuenteBateriaO.position.x + 1.4;
+            Players[1].Descargado = true;
+            Players[1].Turbo = false;
+
+            if (cube2.position.distanceTo(cube.position) < 1.5)
+                cube.position.x -= 1.4;
+            puntuacion2 -= 50;
+        }
+        if (Players[1].Bateria > 30)
+            Players[1].Descargado = false;
+
+
+        ///////////////////////
+        ////RECOGER OBJETOS
+        for (var i = 0; i < 5; i++) {
+            if (PickArray[i].Activado) {
+                PickArray[i].Objeto.visible = true
+
+                if (PickArray[i].Recogido == true && PickArray[i].Entregado == false) {
+                    //  PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
+                    // PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
+                    if (PickArray[i].Seguir == cube) {
+                        if (cube.rotation.y == (90 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 2;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
+                        }
+                        if (cube.rotation.y == (270 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 2;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
+                        }
+                        if (cube.rotation.y == (0 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 2;
+                        }
+                        if (cube.rotation.y == (180 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 2;
+                        }
+
+                        if (cube.rotation.y == (45 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 1;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 1;
+                        }
+                        if (cube.rotation.y == (315 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 1;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 1;
+                        }
+                        if (cube.rotation.y == (135 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 1;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 1;
+                        }
+                        if (cube.rotation.y == (225 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 1;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 1;
+                        }
+                    }
+                    if (PickArray[i].Seguir == cube2) {
+                        if (cube2.rotation.y == (90 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 2;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
+                        }
+                        if (cube2.rotation.y == (270 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 2;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
+                        }
+                        if (cube2.rotation.y == (0 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 2;
+                        }
+                        if (cube2.rotation.y == (180 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 2;
+                        }
+
+                        if (cube2.rotation.y == (45 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 1;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 1;
+                        }
+                        if (cube2.rotation.y == (315 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 1;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 1;
+                        }
+                        if (cube2.rotation.y == (135 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 1;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 1;
+                        }
+                        if (cube2.rotation.y == (225 * Math.PI) / 180) {
+                            PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 1;
+                            PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 1;
+                        }
                     }
 
                 }
+                if (PickArray[i].Entregado == false) {
 
-                particles.geometry.attributes.position.needsUpdate = true;
-                
+                    if (PickArray[i].Objeto.position.distanceTo(meta) < 3.0) {
+                        //PickArray[0].Objeto.remove();
+                        PickArray[i].Objeto.position.y = -5;
+                        if (PickArray[i].Seguir == cube) {
+                            Players[0].Puntaje += 1;
 
-                count += 0.1;
-    
-
-
-
-    ///////////////////////
-    ///////////particulas Mareo/////////////
-    const positionsMareo = particlesMareo.geometry.attributes.position.array;
-    const positionsMareo2 = particlesMareo2.geometry.attributes.position.array;
-    
-    particlesMareo.geometry.rotateY(THREE.Math.degToRad(.2));
-    particlesMareo2.geometry.rotateY(THREE.Math.degToRad(.2));
-     
-    
-
-    let ipdMareo = 0, jpdMareo = 0;
-
-                for ( let ix = 0; ix < 3; ix ++ ) {
+                            puntuacion += puntosOBJ;
+                            puntosOBJ = 0;
+                            quitaPuntosOBJ = false;
+                        }
+                        else {
+                            Players[1].Puntaje += 1;
+                            puntuacion2 += puntosOBJ;
+                            puntosOBJ = 0;
+                            quitaPuntosOBJ = false;
+                        }
 
 
-                    positionsMareo[ ipdMareo + 1 ] = ( Math.sin( ( ix + countMareo ) * 0.01 ) + 3) ;
-                    positionsMareo[ ipdMareo + 0 ] =  cube.position.x + ( Math.sin( ( ix + countMareo ) * 1 ) * 1);
-                    positionsMareo[ ipdMareo + 2 ] =  cube.position.z + ( Math.sin( ( ix + countMareo ) * 2 ) * 1);
+                        if (i < 4)
+                            PickArray[i + 1].Activado = true;
+                        else
+                            PickArray[4].Activado = true;
 
-                    positionsMareo2[ ipdMareo + 1 ] = ( Math.sin( ( ix + countMareo ) * 0.01 ) + 3) ;
-                    positionsMareo2[ ipdMareo + 0 ] =  cube2.position.x + ( Math.sin( ( ix + countMareo ) * 1 ) * 1);
-                    positionsMareo2[ ipdMareo + 2 ] =  cube2.position.z + ( Math.sin( ( ix + countMareo ) * 2 ) * 1);
+                        PickArray[i].Entregado = true;
+                        PickArray[i].Activado = false;
 
-
-                    ipdMareo += 3;
-                    jpdMareo ++;
+                        //PickArray[0].Objeto.remove();
+                    }
 
                 }
-
-                particlesMareo.geometry.attributes.position.needsUpdate = true;
-                particlesMareo2.geometry.attributes.position.needsUpdate = true;
-                
-
-                countMareo += 0.03;
-    
-    ///////////////////////
-    ////CARGA
-
-    if (Players[0].Bateria < 100) {
-        if ((cube.position.z > -10 && cube.position.z < -5) && (cube.position.x > -5 && cube.position.x < 5)) {
-            Players[0].Bateria += .1;
+            }
         }
-    }
 
-    if (Players[1].Bateria < 100) {
-        if ((cube2.position.z > -10 && cube2.position.z < -5) && (cube2.position.x > -5 && cube2.position.x < 5)) {
-            Players[1].Bateria += .1;
-        }
-    }
-    ////DESCARGADOS
-    if (Players[0].Bateria < 0) {
-        cube.position.z = fuenteBateriaO.position.z;
-        cube.position.x = fuenteBateriaO.position.x - 1.4;
-        Players[0].Descargado = true;
-        Players[0].Turbo = false;
-    }
-    if (Players[0].Bateria > 30)
-        Players[0].Descargado = false;
+        if (keys["E"]) {
+            for (var i = 0; i < 5; i++) {
+                var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube.position.z) ** 2));
+                if (distance < 1.6 && PickArray[i].Recogido == false) {
+                    PickArray[i].Seguir = cube;
+                    PickArray[i].Recogido = true;
+                    PickArray[i].movido = true;
 
-    if (Players[1].Bateria < 0) {
-        cube2.position.z = fuenteBateriaO.position.z;
-        cube2.position.x = fuenteBateriaO.position.x + 1.4;
-        Players[1].Descargado = true;
-        Players[1].Turbo = false;
-    }
-    if (Players[1].Bateria > 30)
-        Players[1].Descargado = false;
-
-
-    ///////////////////////
-    ////RECOGER OBJETOS
-    for(var i=0;i<5;i++){
-        if(PickArray[i].Activado){
-            PickArray[i].Objeto.visible = true
-            
-            if (PickArray[i].Recogido == true && PickArray[i].Entregado == false) {
-              //  PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
-               // PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
-                if(PickArray[i].Seguir==cube){ 
-                    if(cube.rotation.y == (90 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 2;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
+                    if (puntosOBJ == 0) {
+                        puntosOBJ = 1000;
                     }
-                    if(cube.rotation.y == (270 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 2;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
-                    }
-                    if(cube.rotation.y == (0 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 2;
-                    }
-                    if(cube.rotation.y == (180 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 2;
-                    }
-
-                    if(cube.rotation.y == (45 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 1;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 1;
-                    }
-                    if(cube.rotation.y == (315 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 1;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 1;
-                    }
-                    if(cube.rotation.y == (135 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 1;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 1;
-                    }
-                    if(cube.rotation.y == (225 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 1;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 1;
-                    }
+                    quitaPuntosOBJ = true;
                 }
-                if(PickArray[i].Seguir==cube2){ 
-                    if(cube2.rotation.y == (90 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 2;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
-                    }
-                    if(cube2.rotation.y == (270 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 2;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z;
-                    }
-                    if(cube2.rotation.y == (0 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 2;
-                    }
-                    if(cube2.rotation.y == (180 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 2;
-                    }
+            }
+        }
+        else if (keys["Q"]) {
+            for (var i = 0; i < 5; i++) {
+                if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
 
-                    if(cube2.rotation.y == (45 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 1;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 1;
-                    }
-                    if(cube2.rotation.y == (315 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 1;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z + 1;
-                    }
-                    if(cube2.rotation.y == (135 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x + 1;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 1;
-                    }
-                    if(cube2.rotation.y == (225 * Math.PI) / 180){
-                        PickArray[i].Objeto.position.x = PickArray[i].Seguir.position.x - 1;
-                        PickArray[i].Objeto.position.z = PickArray[i].Seguir.position.z - 1;
-                    }
+                    PickArray[i].Recogido = false;
+
+                    quitaPuntosOBJ = false;
                 }
-
             }
-            if (PickArray[i].Entregado == false) {
-        
-                if (PickArray[i].Objeto.position.distanceTo(meta) < 3.0) {
-                    //PickArray[0].Objeto.remove();
-                    PickArray[i].Objeto.position.y = -5;
-                    if (PickArray[i].Seguir == cube)
-                        Players[0].Puntaje += 1;
-                    else
-                        Players[1].Puntaje += 1
-        
-                    if(i<4)
-                        PickArray[i + 1].Activado = true;
-                    else
-                        PickArray[4].Activado = true;
-                   
-                    PickArray[i].Entregado = true;
-                    PickArray[i].Activado = false;
+        }
 
-                    //PickArray[0].Objeto.remove();
+        if (keys["O"]) {
+            for (var i = 0; i < 5; i++) {
+                var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube2.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube2.position.z) ** 2));
+                if (distance < 1.6 && PickArray[i].Recogido == false) {
+                    PickArray[i].Seguir = cube2;
+                    PickArray[i].Recogido = true;
+                    PickArray[i].movido = true;
+
+
+                    if (puntosOBJ == 0) {
+                        puntosOBJ = 1000;
+                    }
+                    quitaPuntosOBJ = true;
                 }
-        
             }
         }
-    }
+        else if (keys["U"]) {
+            for (var i = 0; i < 5; i++) {
+                if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube2) {
+                    PickArray[i].Seguir = PickArray[i].Objeto;
+                    PickArray[i].Recogido = false
 
-    if (keys["E"]) {
-        for(var i=0;i<5;i++){
-            var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube.position.z) ** 2));
-            if (distance < 1.6 && PickArray[i].Recogido == false) {
-                PickArray[i].Seguir = cube;
-                PickArray[i].Recogido = true;
-                PickArray[i].movido = true;
-                P1WO = true;
+                    quitaPuntosOBJ = false;
+                }
             }
         }
-    }
-    else if (keys["Q"]) {
-        for(var i=0;i<5;i++){
-            if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
-               
-                PickArray[i].Recogido = false
-                P1WO = false;
-            }
+        /////////////////
+        ////TURBO
+        if (keys["R"] && Players[0].Descargado == false) {
+            Players[0].Turbo = !Players[0].Turbo;
         }
-    }
-
-    if (keys["O"]) {
-        for(var i=0;i<5;i++){
-            var distance = Math.sqrt(((PickArray[i].Objeto.position.x - cube2.position.x) ** 2) + ((PickArray[i].Objeto.position.z - cube2.position.z) ** 2));
-            if (distance < 1.6 && PickArray[i].Recogido == false) {
-
-                
-                PickArray[i].Seguir = cube2;
-                PickArray[i].Recogido = true;
-                PickArray[i].movido = true;
-                P1WO = true;
-            }
+        if (keys["P"] && Players[1].Descargado == false) {
+            Players[1].Turbo = !Players[1].Turbo;
         }
-    }
-    else if (keys["U"]) {
-        for(var i=0;i<5;i++){
-            if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube2) {
-                PickArray[i].Seguir = PickArray[i].Objeto;
-                PickArray[i].Recogido = false
-                P1WO = false;
-            }
-        }
-    }
-    /////////////////
-    ////TURBO
-    if (keys["R"] && Players[0].Descargado == false) {
-        Players[0].Turbo = !Players[0].Turbo;
-    }
-    if (keys["P"] && Players[1].Descargado == false) {
-        Players[1].Turbo = !Players[1].Turbo;
-    }
-    /////////////////
-    ////GOLPE
+        /////////////////
+        ////GOLPE
 
         if (keys["F"]) {
-        
+
             var distance = Math.sqrt(((cube.position.x - cube2.position.x) ** 2) + ((cube.position.z - cube2.position.z) ** 2));
-            if (distance < 2 && Players[1].Aturdido == false){
+            if (distance < 2 && Players[1].Aturdido == false) {
                 Players[0].Bateria -= 5;
                 Players[1].Aturdido = true;
-                particlesMareo2.geometry.setDrawRange(0,Infinity );
-                for(var i=0;i<5;i++){
+                particlesMareo2.geometry.setDrawRange(0, Infinity);
+                for (var i = 0; i < 5; i++) {
                     if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube2) {
                         PickArray[i].Seguir = PickArray[i].Objeto;
-                        PickArray[i].Recogido = false
-                        P1WO = false;
+                        PickArray[i].Recogido = false;
+
+                        quitaPuntosOBJ = false;
                     }
                 }
-                
+
             }
-    
+
         }
-    
+
         if (keys["H"]) {
             var distance = Math.sqrt(((cube.position.x - cube2.position.x) ** 2) + ((cube.position.z - cube2.position.z) ** 2));
-            if (distance < 2 && Players[0].Aturdido == false){
+            if (distance < 2 && Players[0].Aturdido == false) {
                 Players[1].Bateria -= 5;
                 Players[0].Aturdido = true;
-                particlesMareo.geometry.setDrawRange(0,Infinity );
-                for(var i=0;i<5;i++){
+                particlesMareo.geometry.setDrawRange(0, Infinity);
+                for (var i = 0; i < 5; i++) {
                     if (PickArray[i].Recogido == true && PickArray[i].Seguir == cube) {
                         PickArray[i].Seguir = PickArray[i].Objeto;
-                        PickArray[i].Recogido = false
-                        P1WO = false;
+                        PickArray[i].Recogido = false;
+
+                        quitaPuntosOBJ = false;
                     }
                 }
-                
+
             }
         }
-    
-        for(var i = 0; i < 2; i++){
+
+        for (var i = 0; i < 2; i++) {
             Players[i].StunnedTime += .2;
-            if(Players[i].Aturdido == true && Players[i].StunnedTime > 9){
+            if (Players[i].Aturdido == true && Players[i].StunnedTime > 9) {
                 Players[i].Aturdido = false;
-                particlesMareo.geometry.setDrawRange(0,0);
-                particlesMareo2.geometry.setDrawRange(0,0);
+                particlesMareo.geometry.setDrawRange(0, 0);
+                particlesMareo2.geometry.setDrawRange(0, 0);
                 Players[i].StunnedTime = 0;
             }
         }
@@ -554,114 +584,128 @@ function render() {
 
 
 
-    if (Players[0].Bateria > 0 && Players[0].Descargado == false && Players[0].Aturdido == false) {
-        if (keys["A"]) {
-            cube.rotation.y = (90 * Math.PI) / 180;
-            Players[0].Bateria -= .05;
-            yaw = 5;
-            moveS1 = true;
-        } else if (keys["D"]) {
-            cube.rotation.y = (270 * Math.PI) / 180;
-            Players[0].Bateria -= .05;
-            yaw = -5;
-            moveS1 = true;
+        if (Players[0].Bateria > 0 && Players[0].Descargado == false && Players[0].Aturdido == false) {
+            if (keys["A"]) {
+                cube.rotation.y = (90 * Math.PI) / 180;
+                Players[0].Bateria -= .05;
+                yaw = 5;
+                moveS1 = true;
+            } else if (keys["D"]) {
+                cube.rotation.y = (270 * Math.PI) / 180;
+                Players[0].Bateria -= .05;
+                yaw = -5;
+                moveS1 = true;
+            }
+            if (keys["W"]) {
+                cube.rotation.y = (0 * Math.PI) / 180;
+                Players[0].Bateria -= .05;
+                if (keys["A"])
+                    cube.rotation.y = (45 * Math.PI) / 180;
+                else if (keys["D"])
+                    cube.rotation.y = (315 * Math.PI) / 180;
+                forward = -5;
+                moveF1 = true;
+            } else if (keys["S"]) {
+                cube.rotation.y = (180 * Math.PI) / 180;
+                Players[0].Bateria -= .05;
+                if (keys["A"])
+                    cube.rotation.y = (135 * Math.PI) / 180;
+                else if (keys["D"])
+                    cube.rotation.y = (225 * Math.PI) / 180;
+                forward = 5;
+                moveF1 = true;
+            }
+            if (Players[0].Turbo) {
+                yaw = yaw * 2;
+                forward = forward * 2;
+                Players[0].Bateria -= .05;
+            }
+
         }
-        if (keys["W"]) {
-            cube.rotation.y = (0 * Math.PI) / 180;
-            Players[0].Bateria -= .05;
-            if (keys["A"])
-                cube.rotation.y = (45 * Math.PI) / 180;
-            else if (keys["D"])
-                cube.rotation.y = (315 * Math.PI) / 180;
-            forward = -5;
-            moveF1 = true;
-        } else if (keys["S"]) {
-            cube.rotation.y = (180 * Math.PI) / 180;
-            Players[0].Bateria -= .05;
-            if (keys["A"])
-                cube.rotation.y = (135 * Math.PI) / 180;
-            else if (keys["D"])
-                cube.rotation.y = (225 * Math.PI) / 180;
-            forward = 5;
-            moveF1 = true;
+        var yaw2 = 0;
+        var forward2 = 0;
+        var moveF2 = false;
+        var moveS2 = false;
+        if (Players[1].Bateria > 0 && Players[1].Descargado == false && Players[1].Aturdido == false) {
+            if (keys["J"]) {
+                cube2.rotation.y = (90 * Math.PI) / 180;
+                Players[1].Bateria -= 0.05;
+                yaw2 = 5;
+                moveS2 = true;
+            } else if (keys["L"]) {
+                cube2.rotation.y = (270 * Math.PI) / 180;
+                Players[1].Bateria -= 0.05;
+                yaw2 = -5;
+                moveS2 = true;
+            }
+            if (keys["I"]) {
+                cube2.rotation.y = (0 * Math.PI) / 180;
+                Players[1].Bateria -= 0.05;
+                if (keys["J"])
+                    cube2.rotation.y = (45 * Math.PI) / 180;
+                else if (keys["L"])
+                    cube2.rotation.y = (315 * Math.PI) / 180;
+                forward2 = -5;
+                moveF2 = true;
+            } else if (keys["K"]) {
+                cube2.rotation.y = (180 * Math.PI) / 180;
+                Players[1].Bateria -= 0.05;
+                if (keys["J"])
+                    cube2.rotation.y = (135 * Math.PI) / 180;
+                else if (keys["L"])
+                    cube2.rotation.y = (225 * Math.PI) / 180;
+                forward2 = 5;
+                moveF2 = true;
+
+            }
+            if (Players[1].Turbo) {
+                yaw2 = yaw2 * 2;
+                forward2 = forward2 * 2;
+                Players[1].Bateria -= .05;
+            }
         }
-        if (Players[0].Turbo) {
-            yaw = yaw * 2;
-            forward = forward * 2;
-            Players[0].Bateria -= .05;
+
+
+        for (var i = 0; i < PickArray.length; i++) {
+            if (PickArray[i].Recogido == false)
+                PickArray[i].Objeto.rotateY(THREE.Math.degToRad(15) * deltaTime);
         }
+
+
+        angle = cube.position.angleTo(facing1Prev);
+        var orientation = cube.position.x * facing1Prev.z - cube.position.z * facing1Prev.x;
+        if (orientation > 0) angle = 2 * Math.PI - angle;
+        cube.position.z += -forward * deltaTime;
+        if (moveS1)
+            cube.position.x += yaw * deltaTime;
+
+        if (moveF2)
+            cube2.position.z += -forward2 * deltaTime;
+        if (moveS2)
+            cube2.position.x += yaw2 * deltaTime;
+
+        colisiona(cube, cube2, Players[0]);
+        colisiona(cube2, cube, Players[1]);
+        Players[0].xAnt = cube.position.x;
+        Players[0].zAnt = cube.position.z;
+        Players[1].xAnt = cube2.position.x;
+        Players[1].zAnt = cube2.position.z;
+
+        camMove.position.x = (cube.position.x + cube2.position.x) / 20;
+        camMove.position.z = (cube.position.z + cube2.position.z) / 20;
+
+        camera.lookAt(camMove.position);
+        camera.position.set(0, 15, camMove.position.z - 10);
+
+        updateHUD(Players);
+        highscore(puntuacion, puntuacion2);
+
+        renderer.render(scene, camera);
+
+        facing1Prev.copy(cube.position);
 
     }
-    var yaw2 = 0;
-    var forward2 = 0;
-    var moveF2 = false;
-    var moveS2 = false;
-    if (Players[1].Bateria > 0 && Players[1].Descargado == false && Players[1].Aturdido == false) {
-        if (keys["J"]) {
-            cube2.rotation.y = (90 * Math.PI) / 180;
-            Players[1].Bateria -= 0.05;
-            yaw2 = 5;
-            moveS2 = true;
-        } else if (keys["L"]) {
-            cube2.rotation.y = (270 * Math.PI) / 180;
-            Players[1].Bateria -= 0.05;
-            yaw2 = -5;
-            moveS2 = true;
-        }
-        if (keys["I"]) {
-            cube2.rotation.y = (0 * Math.PI) / 180;
-            Players[1].Bateria -= 0.05;
-            if (keys["J"])
-                cube2.rotation.y = (45 * Math.PI) / 180;
-            else if (keys["L"])
-                cube2.rotation.y = (315 * Math.PI) / 180;
-            forward2 = -5;
-            moveF2 = true;
-        } else if (keys["K"]) {
-            cube2.rotation.y = (180 * Math.PI) / 180;
-            Players[1].Bateria -= 0.05;
-            if (keys["J"])
-                cube2.rotation.y = (135 * Math.PI) / 180;
-            else if (keys["L"])
-                cube2.rotation.y = (225 * Math.PI) / 180;
-            forward2 = 5;
-            moveF2 = true;
 
-        }
-        if (Players[1].Turbo) {
-            yaw2 = yaw2 * 2;
-            forward2 = forward2 * 2;
-            Players[1].Bateria -= .05;
-        }
-    }
-
-    for(var i = 0; i<PickArray.length; i++){
-        if(PickArray[i].Recogido == false)
-            PickArray[i].Objeto.rotateY(THREE.Math.degToRad(15) * deltaTime);
-    }
-
-    angle = cube.position.angleTo(facing1Prev);
-    var orientation = cube.position.x * facing1Prev.z - cube.position.z * facing1Prev.x;
-    if (orientation > 0) angle = 2 * Math.PI - angle;
-    cube.position.z += -forward * deltaTime;
-    if (moveS1)
-        cube.position.x += yaw * deltaTime;
-
-    if (moveF2)
-        cube2.position.z += -forward2 * deltaTime;
-    if (moveS2)
-        cube2.position.x += yaw2 * deltaTime;
-
-    camMove.position.x = (cube.position.x + cube2.position.x) / 20;
-    camMove.position.z = (cube.position.z + cube2.position.z) / 20;
-
-    camera.lookAt(camMove.position);
-    camera.position.set(0, 15, camMove.position.z - 10);
-
-
-    renderer.render(scene, camera);
-
-    facing1Prev.copy(cube.position);
 }
 
 function loadFBX(path, onLoadCallback) {
@@ -685,6 +729,101 @@ function loadFBX(path, onLoadCallback) {
 }
 
 
+//////////////////////////////////
+////Funciones que sirven mucho////
+//////////////////////////////////
+
+function elTiempo(deltatime) {
+    reloj -= 1 * deltatime;
+    if (Math.floor(reloj) < 0) {
+        reloj = 0;
+        $('#gameOver').show();
+        return false;
+    }
+
+    if (quitaPuntosOBJ) {
+        puntosOBJ -= 1 * deltatime;
+        puntosOBJ = Math.floor(puntosOBJ);
+    }
+
+    $('.tiempo').text(Math.floor(reloj));
+    return true;
+}
+
+function updateHUD(players) {
+    $("#x").text(players[0].Bateria);
+
+    $("#lifeP1").css('width', players[0].Bateria + '%')
+
+    $("#y").text(players[1].Bateria);
+
+    $("#lifeP2").css('width', 'calc(' + players[1].Bateria + '% - 40px)')
+
+    $("#z").text("ScoreP1:" + players[0].Puntaje + " ScoreP2:" + players[1].Puntaje);
+
+    $("#scoreP1").text(puntuacion);
+
+    $("#scoreP2").text(puntuacion2);
+}
+
+function contador(deltatime) {
+    countDown -= 1 * deltatime;
+    if (Math.floor(countDown) < 0) {
+        countDown = 0;
+        return true;
+    }
+    return false;
+}
+
+function highscore(one, two) {
+    if (one > two) {
+        $('#highscore').text(one);
+        $('#nameWinner').text('Ganador: Jugador 1');
+        $('#playerHighScore').val('Jugador 1');
+    }
+    else {
+        $('#highscore').text(two);
+        $('#nameWinner').text('Ganador: Jugador 2');
+        $('#playerHighScore').val('Jugador 2');
+    }
+}
+
+function colisiona(mono, mono2, player) {
+    for (var i = 0; i < mono.misRayos.length; i++) {
+
+        var rayo = mono.misRayos[i];
+
+        rayCaster.set(mono.position, rayo);
+
+        var colisiones = rayCaster.intersectObjects(objects, true);
+
+        colisiones.forEach(element => {
+            if (element.distance < 1) {
+                mono.position.x = player.xAnt;
+                mono.position.z = player.zAnt;
+            }
+        });
+
+        var colisiones2 = rayCaster.intersectObject(mono2, true);
+
+        colisiones2.forEach(element => {
+            if (element.distance < 1) {
+
+                mono.position.x = player.xAnt;
+                mono.position.z = player.zAnt;
+
+                console.log("colision");
+            }
+        });
+
+    }
+}
+
+//////////////////////////////////
+//////////////////////////////////
+//////////////////////////////////
+
+
 function setupScene() {
 
     //////////////////////////////////////////////////
@@ -706,6 +845,8 @@ function setupScene() {
     camMove.position.set(0, 0, 0);
     scene.add(camMove);
 
+    rayCaster = new THREE.Raycaster();
+
     renderer = new THREE.WebGLRenderer({ precision: "mediump" });
     renderer.setClearColor(new THREE.Color(0, 0, 0));
     renderer.setPixelRatio(visibleSize.width / visibleSize.height);
@@ -722,6 +863,13 @@ function setupScene() {
         cube.scale.set(0.2, 0.2, 0.2);
         cube.castShadow = true;
         cube.receiveShadow = true;
+
+        cube.misRayos = [
+            new THREE.Vector3(0, 0, 1),
+            new THREE.Vector3(0, 0, -1),
+            new THREE.Vector3(1, 0, 0),
+            new THREE.Vector3(-1, 0, 0)
+        ];
         scene.add(cube);
     });
 
@@ -732,13 +880,21 @@ function setupScene() {
         cube2.scale.set(0.2, 0.2, 0.2);
         cube2.castShadow = true;
         cube2.receiveShadow = true;
+
+        cube2.misRayos = [
+            new THREE.Vector3(0, 0, 1),
+            new THREE.Vector3(0, 0, -1),
+            new THREE.Vector3(1, 0, 0),
+            new THREE.Vector3(-1, 0, 0)
+        ];
+
         scene.add(cube2);
     });
 
     loadFBX("modelos/stage2/objetos2/skate/skate.fbx", (object) => {
         testobj = object;
         testobj.position.set(0, 0, 0);
-        testobj.scale.set(.8,.8,.8);
+        testobj.scale.set(.8, .8, .8);
         testobj.castShadow = true;
         testobj.receiveShadow = true;
         scene.add(testobj);
@@ -749,6 +905,9 @@ function setupScene() {
         object.translateZ(-5);
         object.castShadow = true;
         object.receiveShadow = true;
+
+        objects.push(object);
+
         scene.add(object);
     });
 
@@ -759,13 +918,16 @@ function setupScene() {
         meta.copy(object.position);
         object.castShadow = true;
         object.receiveShadow = true;
+
+        objects.push(object);
+
         scene.add(object);
     });
     ////RECOGIBLES
     loadFBX("modelos/stage2/objetos2/bag/MOCHILA.FBX", (object) => {
         pick2 = object;
         pick2.position.set(7, 0, 0);
-        pick2.scale.set(.1,.1,.1);
+        pick2.scale.set(.1, .1, .1);
         pick2.castShadow = true;
         pick2.receiveShadow = true;
         scene.add(pick2);
@@ -773,7 +935,7 @@ function setupScene() {
     loadFBX("modelos/stage2/objetos2/cono/cono.fbx", (object) => {
         pick3 = object;
         pick3.position.set(3, 0, 0);
-        pick3.scale.set(.6,.6,.6);
+        pick3.scale.set(.6, .6, .6);
         pick3.castShadow = true;
         pick3.receiveShadow = true;
         scene.add(pick3);
@@ -781,7 +943,7 @@ function setupScene() {
     loadFBX("modelos/stage2/objetos2/pelota/soccerBall.fbx", (object) => {
         pick4 = object;
         pick4.position.set(-3, 0, 0);
-        pick4.scale.set(.4,.4,.4);
+        pick4.scale.set(.4, .4, .4);
         pick4.castShadow = true;
         pick4.receiveShadow = true;
         scene.add(pick4);
@@ -789,7 +951,7 @@ function setupScene() {
     loadFBX("modelos/stage2/objetos2/shoe/shoe.fbx", (object) => {
         pick5 = object;
         pick5.position.set(-7, 0, 0);
-        pick5.scale.set(.07,.07,.07);
+        pick5.scale.set(.07, .07, .07);
         pick5.castShadow = true;
         pick5.receiveShadow = true;
         scene.add(pick5);
@@ -801,8 +963,11 @@ function setupScene() {
         fuenteBateriaO.rotateY(THREE.Math.degToRad(90));
         fuenteBateriaO.castShadow = true;
         fuenteBateriaO.receiveShadow = true;
+
+        objects.push(fuenteBateriaO);
+
         scene.add(fuenteBateriaO);
-     });
+    });
 
     const light = new THREE.PointLight(0xffffff, 1, 100);
     light.position.set(3, 15, 20);
@@ -829,15 +994,15 @@ function setupScene() {
     PickArray.push(new Pickable(pick4, false, pick4, false, false));
     PickArray.push(new Pickable(pick5, false, pick5, false, false));
 
-    for(var i = 0; i < 5; i++){
-        
+    for (var i = 0; i < 5; i++) {
+
         var k = 0
-        do{
-            k = Math.floor(Math.random() * Posiciones.length);    
-        }while(Posiciones[k].tomada == true)
+        do {
+            k = Math.floor(Math.random() * Posiciones.length);
+        } while (Posiciones[k].tomada == true)
         PickArray[i].Origen = k
         Posiciones[k].tomada = true
-       
+
     }
     //pick2.position.x =1
     //(Math.random() * 100) + 1

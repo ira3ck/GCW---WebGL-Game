@@ -14,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="shortcut icon" href="img/icono.png" />
     <title>Rey Pide</title>
     <link rel="stylesheet" href="css/style.css">
@@ -26,7 +27,11 @@
     <script src="js/nivel2.js" type="module">
     </script>
 
-    <div id="pauseMenu">
+    <div class="cargando">
+        <span class="mr-2">Cargando...</span><i class="fa fa-spinner fa-spin"></i>
+    </div>
+
+    <div class="gameScreen" id="pauseMenu">
         <div class="center-screen">
             <div class="container">
                 <div class="row justify-content-md-center">
@@ -41,9 +46,28 @@
                 </div>
                 <div class="row"></div>
             </div>
-
         </div>
     </div>
+
+    <div id="gameOver" class="gameScreen">
+        <div class="center-screen">
+            <div class="container">
+                <div class="row justify-content-center infoScreen" style="font-size: 8vh;">
+                    FIN DEL JUEGO
+                </div>
+                <div class="row justify-content-center infoScreen" style="font-size: 12vh;" id="nameWinner">
+                    Ganador: Jugador 1
+                </div>
+                <div class="row justify-content-center mt-5">
+                    <div class="pauseBTN" data-toggle="modal" data-target="#puntuacion">
+                        Continuar
+                    </div>
+                </div>
+                <div class="row"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="p1">
         <div class="playerName px-3 py-1">Jugador 1</div>
         <div class="datos">
@@ -51,19 +75,72 @@
                 <div class="bateriaValue overflow-hidden" id="lifeP1" style="width: 100%;">BATERÍA</div>
             </div>
         </div>
+        <div class="playerName px-3 py-1" id="scoreP1">0</div>
+    </div>
+
+    <div id="info">
+        <div class="text">
+            Tiempo
+            <div class="tiempo"></div>
+        </div>
     </div>
 
     <div class="p2">
         <div class="playerName px-3 py-1">Jugador 2</div>
         <div class="datos">
             <div class="bateria" style="height: 50px; padding-left: 30px;">
-                <div style="background-color: aliceblue;" id="cojin"></div>
-                <div class="bateriaValue overflow-hidden" id="lifeP2" style="width: 100%; position: absolute; right: 10px; margin-left: 30px;">BATERÍA</div>
+                <div class="bateriaValue overflow-hidden" id="lifeP2"
+                    style="width: calc(100% - 40px); position: absolute; right: 10px; margin-left: 30px;">BATERÍA</div>
+            </div>
+        </div>
+        <div class="playerName px-3" id="scoreP2">0</div>
+    </div>
+
+    <div class="modal fade" id="puntuacion" tabindex="-1" aria-labelledby="puntuacionLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body user-select-none">
+                    <div class="container">
+                        <div class="row justify-content-center"
+                            style="font-size: x-large; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+                            Puntuación</div>
+                        <div class="row justify-content-center text-center text-break" id="highscore"
+                            style="font-size: 3vw; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+                            0</div>
+                        <div class="row justify-content-center">
+                            <input type="text" class="form-control text-center" id="playerHighScore" value="Jugador 1">
+                        </div>
+                        <div class="row justify-content-center mb-5">
+                            <div class="col-2"></div>
+                            <div class="col pauseBTN text-center justify-content-center" id="submitScore">Subir
+                                puntuación</div>
+                            <div class="col-2"></div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col p-3 overflow-hidden">
+                                <div class="pauseBTN text-center" onclick="reload()">Volver a jugar</div>
+                            </div>
+                            <div class="col p-3 overflow-hidden">
+                                <div class="pauseBTN text-center" onclick="redirect('menu.html')">Ir al Menú</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="scene-section"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-database.js"></script>
+    <script src="js/fireDB.js"></script>
+
 </body>
 
 </html>
