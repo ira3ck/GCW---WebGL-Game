@@ -19,11 +19,14 @@ $(document).ready(function () {
         var nombre = $('#playerHighScore').val();
 
         var dbRefPlayers = firebase.database().ref().child("puntuaciones");
+        var img = sessionStorage.getItem('imagen');
+        if(img === null)img = 1;
 
         var newScore = dbRefPlayers.push();
         newScore.set({
             nombre,
-            puntuacion
+            puntuacion,
+            img
         });
 
         $(this).hide();

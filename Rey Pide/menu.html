@@ -10,19 +10,19 @@
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
     <script type="text/javascript" src="js/scripts.js"></script>
-    
+
     <link rel="stylesheet" href="css/style.css">
     <link rel="shortcut icon" href="img/icono.png" />
     <title>Rey Pide</title>
 </head>
 <!-- yesShow-->
+
 <body class="menuScreen">
     <div class="user-select-none">
 
@@ -39,8 +39,15 @@
             </div>
         </div>
 
-        <div class="perfil">
-            <div class="pfCard">
+        <div class="perfil" data-toggle="modal" data-target="#inSesRegModal">
+            <div class="pfCard" id="inSesCard">
+                <div class="cuadroFoto">
+                    <img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360" alt="error"
+                        class="fotoPerfil">
+                </div>
+                <div class="pfName py-auto">Inicia Sesión</div>
+            </div>
+            <div class="pfCard" id="sessionCard">
                 <div class="cuadroFoto">
                     <img src="https://pbs.twimg.com/media/EiNYZHXWsAE1525?format=png&name=360x360" alt="error"
                         class="fotoPerfil">
@@ -82,6 +89,150 @@
             <small>toy chikito y no puedo</small>
         </div>
     </div>-->
+
+    <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg user-select-none">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="accountLabel">Escoge tu imagen</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-3">
+
+                    <div class="container text-center" id="mods">
+                        <div class="row pb-3">
+                            <div class="col">
+                                <div class="imgSelector mx-auto">
+                                    <div id="izqArrow" class="arrow">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"
+                                            fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                                        </svg>
+                                    </div>
+                                    <div class="photoChoose user-select-none">
+                                        <img src="img/profile/mono.png" alt="">
+                                    </div>
+                                    <div id="derArrow" class="arrow">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"
+                                            fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col"></div>
+                            <div class="col-6">
+                                <div class="pauseBTN text-center" id="modificar" style="z-index: 99999;">Guardar Cambios
+                                </div>
+                            </div>
+                            <div class="col"></div>
+                        </div>
+
+                    </div>
+                    <button type="button" class="btn btn-outline-danger" style="align-self: flex-start;" id="closeSes">
+                        Cerrar Sesión</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="inSesRegModal" tabindex="-1" aria-labelledby="inSesRegLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg user-select-none">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="inSesRegLabel">Tu cuenta</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-3">
+
+                    <div id="volverBTN" class="volverBTN">Volver</div>
+
+                    <div class="container text-center" id="regis">
+                        <div class="row mb-5">
+                            <div class="col">
+                                <h2>Registrarse</h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="usernameInput">Nombre de usuario</label>
+                                <input type="text" class="form-control" id="usernameInputR" placeholder="Usuario" maxlength="10">
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="passwordInput">Contraseña</label>
+                                <input type="password" class="form-control" id="passwordInputR"
+                                    placeholder="Contraseña" maxlength="255">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="passwordInput">Confirmar contraseña</label>
+                                <input type="password" class="form-control" id="passwordInput2R"
+                                    placeholder="Confirmar contraseña" maxlength="255">
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col"></div>
+                            <div class="col-6">
+                                <div class="pauseBTN text-center" id="registrarme" style="z-index: 99999;">Registrarme
+                                </div>
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                    </div>
+
+                    <div class="container text-center" id="inSes">
+                        <div class="row mb-5">
+                            <div class="col">
+                                <h2>Inicia Sesión</h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="usernameInput">Nombre de usuario</label>
+                                <input type="text" class="form-control" id="usernameInput" placeholder="Usuario">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="passwordInput">Contraseña</label>
+                                <input type="password" class="form-control" id="passwordInput" placeholder="Contraseña">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col"></div>
+                            <div class="col-6">
+                                <div class="pauseBTN text-center" id="inSesBTN">Iniciar Sesión</div>
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col">
+                                <button type="button" class="btn btn-link p-0" id="regisBTN">¿No tienes una cuenta?,
+                                    Regístrate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade" id="configModal" tabindex="-1" aria-labelledby="configModalLabel" aria-hidden="true">
         <div class="modal-dialog">
