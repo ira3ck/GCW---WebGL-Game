@@ -190,6 +190,16 @@ $(document).ready(function () {
     scene.add(particlesMareo);
     scene.add(particlesMareo2);
     ////////////////////////////////////////////
+        const listener = new THREE.AudioListener();
+    camera.add( listener );
+    const sound = new THREE.Audio( listener );
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load( 'musica/bensound-funkyelement.mp3', function( buffer ) {
+        sound.setBuffer( buffer );
+        sound.setLoop( true );
+        sound.setVolume( localStorage.getItem("volumen"));
+        sound.play();
+    });
 
     render();
 });
@@ -793,6 +803,11 @@ function highscore(one, two) {
         $('#playerHighScore').val('Jugador 2');
     }
 }
+
+$('#submitScore').click(function () {
+    var score = $('#highscore').text();
+    shareScore(score);
+});
 
 function colisiona(mono, mono2, player) {
     for (var i = 0; i < mono.misRayos.length; i++) {

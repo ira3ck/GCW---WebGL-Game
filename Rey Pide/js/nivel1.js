@@ -55,7 +55,7 @@ var Posiciones = []
 var Players = [];
 var meta;
 
-var reloj = 600;
+var reloj = 60;
 var countDown = 5;
 
 var puntuacion = 0, puntuacion2 = 0;
@@ -194,6 +194,18 @@ $(document).ready(function () {
     scene.add(particlesMareo);
     scene.add(particlesMareo2);
     ////////////////////////////////////////////
+    ////////////musica////////////////////////
+    const listener = new THREE.AudioListener();
+    camera.add( listener );
+    const sound = new THREE.Audio( listener );
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load( 'musica/bensound-funkyelement.mp3', function( buffer ) {
+        sound.setBuffer( buffer );
+        sound.setLoop( true );
+        sound.setVolume( localStorage.getItem("volumen"));
+        sound.play();
+    });
+
 
     render();
 });
@@ -865,7 +877,10 @@ function resetObjects(){
     PickArray[0].Activado = true;
     
 }
-
+$('#submitScore').click(function () {
+    var score = $('#highscore').text();
+    shareScore(score);
+});
 
 function setupScene() {
 

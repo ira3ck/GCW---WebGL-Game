@@ -109,6 +109,21 @@ $(document).ready(function () {
 
     var count = 1;
     var clase;
+    var vid = document.getElementById("myAudio");
+
+    if(localStorage.getItem("volumen") === null){
+        localStorage.setItem("volumen", .5);
+    }
+    vid.volume = localStorage.getItem("volumen");
+    document.getElementById("volumeRange").value = vid.volume*100;
+
+
+    $('#volumeRange' && '#saveChanges').click(function () {
+        var nV = document.getElementById("volumeRange").value/100;
+        vid.volume = nV;
+        localStorage.setItem("volumen", nV);
+        vid.load();
+    })
 
     $('#sessionCard').hide();
 

@@ -18,10 +18,22 @@
     <script type="text/javascript" src="js/scripts.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="shortcut icon" href="img/icono.png" /> 
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var vid = document.getElementById("myAudio");
+            if(localStorage.getItem("volumen") === null){
+                localStorage.setItem("volumen", .5);
+            }
+            vid.volume = localStorage.getItem("volumen");
+        });
+    </script>
     <title>Rey Pide</title>
 </head>
 
 <body>
+    <audio id="myAudio" autoplay loop="true">
+       <source src="musica/bensound-funkyelement.mp3" type="audio/mpeg">
+    </audio>
     <div class="user-select-none yesShow">
         <img src="img/01.png" alt="error" style="width: 100%; height: 100%;" class="fondo">
         <img src="img/02.png" alt="error" style="width: 100%; height: 100%;" class="fondo" id="changing">

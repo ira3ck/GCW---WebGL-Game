@@ -2,6 +2,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 
 import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js';
 
+
 class Pickable {
     constructor(objeto, reco, seguirA, entregado, activado) {
         this.Objeto = objeto;
@@ -194,6 +195,16 @@ $(document).ready(function () {
     scene.add(particlesMareo);
     scene.add(particlesMareo2);
     ////////////////////////////////////////////
+        const listener = new THREE.AudioListener();
+    camera.add( listener );
+    const sound = new THREE.Audio( listener );
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load( 'musica/bensound-funkyelement.mp3', function( buffer ) {
+        sound.setBuffer( buffer );
+        sound.setLoop( true );
+        sound.setVolume( localStorage.getItem("volumen"));
+        sound.play();
+    });
 
     render();
 });
@@ -833,6 +844,10 @@ function colisiona(mono, mono2, player) {
 //////////////////////////////////
 //////////////////////////////////
 //////////////////////////////////
+$('#submitScore').click(function () {
+    var score = $('#highscore').text();
+    shareScore(score);
+});
 
 function resetObjects(){
     
