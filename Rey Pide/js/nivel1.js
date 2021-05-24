@@ -780,7 +780,7 @@ function elTiempo(deltatime) {
         puntosOBJ -= 1 * deltatime;
         puntosOBJ = Math.floor(puntosOBJ);
     }
-    //$('.tiempo').text(pos1 + ", " + pos2);
+    $('.tiempo').text(Math.floor(reloj));
    
     return true;
 }
