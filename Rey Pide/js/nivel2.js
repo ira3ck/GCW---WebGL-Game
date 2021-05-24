@@ -751,6 +751,7 @@ function loadFBX(path, onLoadCallback) {
 
 function elTiempo(deltatime) {
     reloj -= 1 * deltatime;
+    
     if (Math.floor(reloj) < 0) {
         reloj = 0;
         $('#gameOver').show();
@@ -761,7 +762,7 @@ function elTiempo(deltatime) {
         puntosOBJ -= 1 * deltatime;
         puntosOBJ = Math.floor(puntosOBJ);
     }
-
+   
     $('.tiempo').text(Math.floor(reloj));
     return true;
 }
@@ -1024,11 +1025,16 @@ function setupScene() {
     light.shadow.camera.near = 0.5; // default
     light.shadow.camera.far = 500; // default
 
+    Posiciones.push(new RndPosition(11, -7.2))
     Posiciones.push(new RndPosition(0, 0))
-    Posiciones.push(new RndPosition(7, 0))
-    Posiciones.push(new RndPosition(4, 0))
-    Posiciones.push(new RndPosition(-4, 0))
-    Posiciones.push(new RndPosition(-7, 0))
+    Posiciones.push(new RndPosition(0, -2.2))
+    Posiciones.push(new RndPosition(10.1, 3.7))
+    Posiciones.push(new RndPosition(3.6, 9.2))
+    Posiciones.push(new RndPosition(-7.15, -5.3))
+    Posiciones.push(new RndPosition(-12.7, 7.25))
+    Posiciones.push(new RndPosition(-8.5, 12.7))
+    Posiciones.push(new RndPosition(8.2, 16.6))
+    Posiciones.push(new RndPosition(0.4, 7.6))
 
 
 

@@ -767,7 +767,7 @@ function elTiempo(deltatime) {
         puntosOBJ -= 1 * deltatime;
         puntosOBJ = Math.floor(puntosOBJ);
     }
-
+ 
     $('.tiempo').text(Math.floor(reloj));
     return true;
 }
@@ -1031,11 +1031,16 @@ function setupScene() {
     light.shadow.camera.near = 0.5; // default
     light.shadow.camera.far = 500; // default
 
-    Posiciones.push(new RndPosition(0, 0))
-    Posiciones.push(new RndPosition(7, 0))
-    Posiciones.push(new RndPosition(4, 0))
-    Posiciones.push(new RndPosition(-4, 0))
-    Posiciones.push(new RndPosition(-7, 0))
+    Posiciones.push(new RndPosition(-0.2, -7.44))
+    Posiciones.push(new RndPosition(9.2, -7.2))
+    Posiciones.push(new RndPosition(15, -0.1))
+    Posiciones.push(new RndPosition(8.4, 6.7))
+    Posiciones.push(new RndPosition(-10.1, 10.3))
+    Posiciones.push(new RndPosition(-18.5, -3.5))
+    Posiciones.push(new RndPosition(-11.9, -9.5))
+    Posiciones.push(new RndPosition(-14.6, 14.3))
+    Posiciones.push(new RndPosition(13.8, 14.7))
+    
 
     //Pickables.push(testobj);
     PickArray.push(new Pickable(testobj, false, testobj, false, true));

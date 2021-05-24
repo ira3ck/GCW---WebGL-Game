@@ -243,6 +243,10 @@ function render() {
     PickArray[4].Objeto = pick5;
     requestAnimationFrame(render);
 
+    if(keys["X"]){
+        
+    }
+
     for (var i = 0; i < 5; i++) {
         PickArray[i].Objeto.visible = false;
         if (PickArray[i].movido == false) {
@@ -765,6 +769,7 @@ function loadFBX(manager, path, onLoadCallback) {
 
 function elTiempo(deltatime) {
     reloj -= 1 * deltatime;
+    
     if (Math.floor(reloj) < 0) {
         reloj = 0;
         $('#gameOver').show();
@@ -775,8 +780,8 @@ function elTiempo(deltatime) {
         puntosOBJ -= 1 * deltatime;
         puntosOBJ = Math.floor(puntosOBJ);
     }
-
-    $('.tiempo').text(Math.floor(reloj));
+    //$('.tiempo').text(pos1 + ", " + pos2);
+   
     return true;
 }
 
@@ -1054,11 +1059,13 @@ function setupScene() {
     light.shadow.camera.near = 0.5; // default
     light.shadow.camera.far = 500; // default
 
-    Posiciones.push(new RndPosition(0, 0))
-    Posiciones.push(new RndPosition(7, 0))
-    Posiciones.push(new RndPosition(4, 0))
-    Posiciones.push(new RndPosition(-4, 0))
-    Posiciones.push(new RndPosition(-7, 0))
+    Posiciones.push(new RndPosition(6.47, -5.29))
+    Posiciones.push(new RndPosition(0, -2.17))
+    Posiciones.push(new RndPosition(10, 1.47))
+    Posiciones.push(new RndPosition(-0.53, 2.9))
+    Posiciones.push(new RndPosition(-5.4, -4.8))
+    Posiciones.push(new RndPosition(-11.2, 0.71))
+    Posiciones.push(new RndPosition(-9.17, 7.52))
 
 
     //Pickables.push(testobj);
