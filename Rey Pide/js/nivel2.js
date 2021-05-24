@@ -235,6 +235,12 @@ function render() {
             PickArray[i].Objeto.position.z = Posiciones[PickArray[i].Origen].Pz
         }
     }
+    
+    if(PickArray[4].Entregado == true){
+        for(var i in PickArray)
+            PickArray[i].Objeto.position.y = 0.2;
+        resetObjects();
+    }
 
     deltaTime = clock.getDelta();
 
@@ -822,6 +828,29 @@ function colisiona(mono, mono2, player) {
 //////////////////////////////////
 //////////////////////////////////
 //////////////////////////////////
+
+function resetObjects(){
+    
+    for(var i in Posiciones){
+        Posiciones[i].tomada=false;
+    }
+    for(var i in PickArray){
+        PickArray[i].Recogido = false;
+        PickArray[i].Seguir = PickArray[i].Objeto;
+        PickArray[i].Entregado = false;
+        PickArray[i].Activado = false;
+        PickArray[i].movido = false;
+        var k = 0;
+        do {
+            k = Math.floor(Math.random() * Posiciones.length);
+        } while (Posiciones[k].tomada == true)
+        PickArray[i].Origen = k;
+        Posiciones[k].tomada = true;
+        
+    }
+    PickArray[0].Activado = true;
+    
+}
 
 
 function setupScene() {

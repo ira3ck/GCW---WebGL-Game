@@ -36,6 +36,7 @@ class RndPosition {
     }
 }
 
+
 var scene;
 var camera;
 var renderer;
@@ -238,6 +239,14 @@ function render() {
         }
     }
 
+
+    if(PickArray[4].Entregado == true){
+        for(var i in PickArray)
+            PickArray[i].Objeto.position.y = 0.2;
+        resetObjects();
+    }
+       
+
     deltaTime = clock.getDelta();
 
     if (contador(deltaTime) && $('#pauseMenu').is(':hidden') && elTiempo(deltaTime)) {
@@ -356,10 +365,11 @@ function render() {
         if (Players[1].Bateria > 30)
             Players[1].Descargado = false;
 
-
+/////////ENTREGADOS
 
         for (var i = 0; i < 5; i++) {
             if (PickArray[i].Activado) {
+                console.log("Esta activo el " + i);
                 PickArray[i].Objeto.visible = true
                 if (PickArray[i].Recogido == true && PickArray[i].Entregado == false) {
                     if (PickArray[i].Seguir == cube) {
@@ -833,6 +843,28 @@ function colisiona(mono, mono2, player) {
 //////////////////////////////////
 //////////////////////////////////
 //////////////////////////////////
+function resetObjects(){
+    
+    for(var i in Posiciones){
+        Posiciones[i].tomada=false;
+    }
+    for(var i in PickArray){
+        PickArray[i].Recogido = false;
+        PickArray[i].Seguir = PickArray[i].Objeto;
+        PickArray[i].Entregado = false;
+        PickArray[i].Activado = false;
+        PickArray[i].movido = false;
+        var k = 0;
+        do {
+            k = Math.floor(Math.random() * Posiciones.length);
+        } while (Posiciones[k].tomada == true)
+        PickArray[i].Origen = k;
+        Posiciones[k].tomada = true;
+        
+    }
+    PickArray[0].Activado = true;
+    
+}
 
 
 function setupScene() {
@@ -1020,6 +1052,8 @@ function setupScene() {
     PickArray.push(new Pickable(pick3, false, pick3, false, false));
     PickArray.push(new Pickable(pick4, false, pick4, false, false));
     PickArray.push(new Pickable(pick5, false, pick5, false, false));
+    
+    
 
     for (var i = 0; i < 5; i++) {
 
