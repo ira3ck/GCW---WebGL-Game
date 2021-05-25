@@ -24,7 +24,7 @@ class configSQLphp {
         $this -> serverName = 'localhost';
         $this -> userName = 'root';
         $this -> port = 3306;
-        $this -> passCode = '2s#&/378rx69oHGTD&8532%#';
+        $this -> passCode = 'lio121';
         $this -> dbName = 'reypide';
         $this -> socket = "";
     }

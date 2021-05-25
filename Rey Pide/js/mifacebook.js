@@ -18,7 +18,7 @@ window.fbAsyncInit = function() {
   function shareScore(score){
     FB.ui({
       method: 'share',
-      href: 'http://nodemi2.000webhostapp.com',
+      href: 'https://elreypide.000webhostapp.com',
       hashtag: "#MejorPuntuacion",
       quote: "Mi puntuacion: " + score
     }, function(response){});
